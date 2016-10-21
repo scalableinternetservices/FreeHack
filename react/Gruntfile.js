@@ -41,7 +41,7 @@ module.exports = function(grunt) {
 	      },
 	      output: {
 	        filename: '[name].min.js',
-	        path: '../app/assets/js'
+	        path: '../public/js'
 	      },
 	      module: module
 	    },

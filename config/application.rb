@@ -28,5 +28,13 @@ module Cs188RailsProject
     config.api_only = true
 
     # TODO: If necessary, we should initialize rack-attack here...
+    
+    # allow GET, POST or OPTIONS requests from any origin on any resource.
+    config.middleware.insert_before 0, "Rack::Cors" do
+      allow do
+        origins '*'
+        resource '*', :headers => :any, :methods => [:get, :post, :options]
+      end
+    end
   end
 end
