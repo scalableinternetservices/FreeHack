@@ -1,0 +1,22 @@
+{
+  "name": "freehackreact",
+  "version": "1.0.0",
+  "description": "react front-end app for our service",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chris Laganiere <chrislaganiere@ucla.edu> (http://chrislaganiere.com)",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "grunt": "^1.0.1",
+    "grunt-webpack": "^1.0.18",
+    "json-loader": "^0.5.4",
+    "jsx-loader": "^0.13.2",
+    "react": "^15.3.2",
+    "react-bootstrap": "^0.30.5",
+    "react-dom": "^15.3.2",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.16.2"
+  }
+}

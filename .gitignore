@@ -12,6 +12,9 @@ capybara-*.html
 rerun.txt
 pickle-email-*.html
 
+# Ignore React NPM modules
+react/node_modules/
+
 # TODO Comment out this rule if you are OK with secrets being uploaded to the repo
 config/initializers/secret_token.rb
 
