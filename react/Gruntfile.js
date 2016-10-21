@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 	var directory = './pages';
 
  	// vendors will be compiled to a file which can be shared between pages
- 	var entry = {vendors: ['react']};
+ 	var entry = {vendors: ['react', 'react-dom', 'react-bootstrap']};
 
 	// go through files in this directory and add them to target entry
  	var files = grunt.file.expand({cwd: directory}, '*.js', '*.jsx');
