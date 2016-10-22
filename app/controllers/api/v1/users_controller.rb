@@ -1,5 +1,5 @@
 
-module Api
+module Api::V1
   class UsersController < ApiController
 
     # GET /v1/users

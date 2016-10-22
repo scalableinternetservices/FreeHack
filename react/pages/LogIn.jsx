@@ -11,13 +11,21 @@ var Button = require('react-bootstrap').Button;
 var FormGroup = require('react-bootstrap').FormGroup;
 var ControlLabel = require('react-bootstrap').ControlLabel;
 var FormControl = require('react-bootstrap').FormControl;
+var Alert = require('react-bootstrap').Alert;
 
 
 var registerState = "register";
 var loginState = "login";
+var registerURL = "/auth/";
+var loginURL = "/auth/sign_in";
+
 var LogInPage = React.createClass({
   getInitialState: function() {
-    return {authState: registerState, loading: false};
+    return {
+      authState: registerState,
+      loading: false,
+      errors: ""
+    };
   },
   toggleAuthState: function() {
     if (this.state.authState == registerState) {
@@ -27,10 +35,40 @@ var LogInPage = React.createClass({
     }
   },
   registerUser: function(email, password1, password2) {
-    this.setState({loading: true});
+    this.setState({loading: true, errors: ""});
+    var params = {
+      email: email,
+      password: password1,
+      password_confirmation: password2
+    };
+    $.ajax({
+      url: registerURL,
+      dataType: 'json',
+      method: 'post',
+      data: params,
+      cache: false,
+      success: function(data) {
+        this.setState({loading: false});
+        if (data["status"] === "success") {
+          window.open("/frontpage");
+        }
+      }.bind(this),
+      error: function(xhr, status, err) {
+        this.setState({loading: false});
+        var json = $.parseJSON(xhr.responseText);
+        if (json["errors"] !== null && json["errors"]["full_messages"] !== null) {
+          var fullMessages = json["errors"]["full_messages"];
+          var errors = "";
+          for (var message in fullMessages) {
+            errors += fullMessages[message] + "\n";
+          }
+          this.setState({errors: errors});
+        }
+      }.bind(this)
+    });
   },
   logInUser: function(email, password) {
-    this.setState({loading: true});
+    this.setState({loading: true, errors: ""});
   },
   render: function() {
     return (
@@ -38,6 +76,14 @@ var LogInPage = React.createClass({
         <Grid>
           <Row>
             <Col xs={12} md={4} mdPush={4}>
+              { this.state.errors.length > 0 ? 
+                <Alert bsStyle="danger">
+                  <h4>Error</h4>
+                  <p>{this.state.errors}</p>
+                </Alert>
+                :
+                null
+              }
               { this.state.authState == registerState ?
                 <Register registerUser={this.registerUser} loading={this.state.loading} />
                 :
