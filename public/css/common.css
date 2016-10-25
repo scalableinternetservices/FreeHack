@@ -1,0 +1,55 @@
+/** Common styling for FreeHack app **/
+
+body {
+    color: #292f33;
+    background-color: #f5f8fa;
+}
+
+#content {
+	margin: 20px 0;
+}
+
+#content a {
+    cursor: pointer;
+}
+
+.action-dark {
+    background-color: #292f33;
+}
+
+.icons-dark {
+    background-color: #66757f;
+}
+
+.head-dark {
+    background-color: #8899a6;
+}
+
+.subhead-dark {
+    background-color: #ccd6dd;
+}
+
+.light-background {
+    background-color: #e1e8ed;
+}
+
+.light {
+    background-color: #f5f8fa;
+}
+
+/** Nav Bar **/
+
+.signout a {
+  color: #f0657f;
+}
+
+.signout a:hover {
+  color: #db405d;
+}
+
+/** Log In **/
+
+.logInPage {
+    max-width: 400px;
+    margin: 15px auto;
+}

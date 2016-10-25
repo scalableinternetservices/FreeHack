@@ -3,11 +3,15 @@ Rails.application.routes.draw do
   mount_devise_token_auth_for 'User', at: 'auth', skip: [:omniauth_callbacks]
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   
-  root 'api/users#index'
-  
-  constraints subdomain: 'api' do
-  scope module: 'api' do
+  root 'api/v1/users#index'
+
+  # token auth routes available at /api/v1/auth
+  namespace :api do
+    namespace :v1 do
       resources :users
+    end
   end
-end
+  
+  # redirect all unknown to root
+  get '*path' => redirect('/')
 end
