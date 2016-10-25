@@ -3,7 +3,7 @@
 var React = require('react');
 
 var Auth = require('j-toker');
-var PubSub = require('pubsub-js');
+var PubSub = require('../../node_modules/j-toker/node_modules/pubsub-js');
 
 var browserHistory = require('react-router').browserHistory;
 
@@ -22,10 +22,6 @@ var Feed = React.createClass({
   componentDidMount: function() {
     // validate token and get user
     Auth.validateToken()
-    .then(function() {
-      this.setState({user: Auth.user});
-      PubSub.publish('auth', 'hello world!');
-    }.bind(this))
     .fail(function() {
       browserHistory.push('/login');
     });

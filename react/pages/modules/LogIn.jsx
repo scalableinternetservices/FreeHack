@@ -11,10 +11,10 @@ var Alert = require('react-bootstrap').Alert;
 
 var browserHistory = require('react-router').browserHistory;
 var Auth = require('j-toker');
+var PubSub = require('../../node_modules/j-toker/node_modules/pubsub-js');
 
 var registerState = "register";
 var loginState = "login";
-var registerURL = "/auth/";
 
 var LogInPage = React.createClass({
   getInitialState: function() {
@@ -33,36 +33,17 @@ var LogInPage = React.createClass({
   },
   registerUser: function(email, password1, password2) {
     this.setState({loading: true, errors: ""});
-    var params = {
+    Auth.emailSignUp({
       email: email,
       password: password1,
       password_confirmation: password2
-    };
-    $.ajax({
-      url: registerURL,
-      dataType: 'json',
-      method: 'post',
-      data: params,
-      cache: false,
-      success: function(data) {
+    }).then(function(resp) {
         this.setState({loading: false});
-        if (data["status"] === "success") {
-          window.open("/frontpage");
-        }
-      }.bind(this),
-      error: function(xhr, status, err) {
-        this.setState({loading: false});
-        var json = $.parseJSON(xhr.responseText);
-        if (json["errors"] !== null && json["errors"]["full_messages"] !== null) {
-          var fullMessages = json["errors"]["full_messages"];
-          var errors = "";
-          for (var message in fullMessages) {
-            errors += fullMessages[message] + "\n";
-          }
-          this.setState({errors: errors});
-        }
-      }.bind(this)
-    });
+        browserHistory.push('/');
+      }.bind(this))
+      .fail(function(resp) {
+        this.setState({loading: false, errors: resp.data.errors.full_messages.join(", \n")});
+      }.bind(this));
   },
   logInUser: function(email, password) {
     this.setState({loading: true, errors: ""});
@@ -72,9 +53,10 @@ var LogInPage = React.createClass({
     }).then(function(resp) {
         this.setState({loading: false});
         browserHistory.push('/');
+        PubSub.publish( 'auth', 'user registered' );
       }.bind(this))
       .fail(function(resp) {
-        this.setState({loading: false, errors: resp.data.errors.join('\n')});
+        this.setState({loading: false, errors: resp.data.errors.join("\n")});
       }.bind(this));
   },
   render: function() {
@@ -117,95 +99,52 @@ var Register = React.createClass({
   },
   handleSubmit: function(e) {
     e.preventDefault();
-    if (this.emailSatisfied(this.state.emailValue) == "success"
-      && this.passwordSatisfied(this.state.passwordValue) == "success"
-      && this.passwordConfirmationSatisfied((this.state.passwordConfirmationValue)) == "success") {
-      this.props.registerUser(this.state.emailValue, this.state.passwordValue, this.state.passwordConfirmationValue);
-    }
+    this.props.registerUser(this.state.emailValue, this.state.passwordValue, this.state.passwordConfirmationValue);
   },
   handleEmailChange: function(e) {
     this.setState({emailValue: e.target.value});
   },
-  emailSatisfied: function(value) {
-    if (value.length > 5) {
-      return "success";
-    } else {
-      return "error";
-    }
-  },
   handlePasswordChange: function(e) {
     this.setState({passwordValue: e.target.value});
   },
-  passwordSatisfied: function(value) {
-    if (value.length > 5) {
-      return "success";
-    } else {
-      return "error";
-    }
-  },
   handlePasswordConfirmationChange: function(e) {
     this.setState({passwordConfirmationValue: e.target.value});
-  },
-  passwordConfirmationSatisfied: function(value) {
-    if (value == this.state.passwordValue) {
-      return "success";
-    } else {
-      return "error";
-    }
   },
   render: function() {
     return (
       <div className="register">
         <h2>Register</h2>
         <br />
-        <form className="form-horizontal" onSubmit={this.handleSubmit}>
+        <form className="form-horizontal" onSubmit={this.handleSubmit} style={{textAlign: "left"}}>
         
           <FormGroup
-            controlId="formBasicText"
-            validationState={this.emailSatisfied(this.state.emailValue)} >
+            controlId="formBasicText">
             <ControlLabel>Email</ControlLabel>
             <FormControl
               type="text"
               value={this.state.emailValue}
               placeholder="Enter Email"
               onChange={this.handleEmailChange} />
-            { this.state.emailValue.length > 0 ?
-              <FormControl.Feedback />
-              :
-              null
-            }
           </FormGroup>
           
           <FormGroup
-            controlId="formBasicText"
-            validationState={this.passwordSatisfied(this.state.passwordValue)} >
+            controlId="formBasicText">
             <ControlLabel>Password</ControlLabel>
             <FormControl
               type="text"
               value={this.state.passwordValue}
               placeholder="Enter Password"
               onChange={this.handlePasswordChange} />
-            { this.state.passwordValue.length > 0 ?
-              <FormControl.Feedback />
-              :
-              null
-            }
           </FormGroup>
           
           <FormGroup
-            controlId="formBasicText"
-            validationState={this.passwordConfirmationSatisfied(this.state.passwordConfirmationValue)} >
+            controlId="formBasicText">
             <ControlLabel>Confirm Password</ControlLabel>
             <FormControl
               type="text"
               value={this.state.passwordConfirmationValue}
               placeholder="Enter Password Again"
               onChange={this.handlePasswordConfirmationChange} />
-            { this.state.passwordConfirmationValue.length > 0 ?
-              <FormControl.Feedback />
-              :
-              null
-            }
           </FormGroup>
 
         <Button type="submit" disabled={this.props.loading}>
@@ -239,7 +178,7 @@ var LogIn = React.createClass({
       <div className="logIn">
         <h2>Log In</h2>
         <br />
-        <form className="form-horizontal" onSubmit={this.handleSubmit}>
+        <form className="form-horizontal" onSubmit={this.handleSubmit} style={{textAlign: "left"}}>
         
           <FormGroup
             controlId="formBasicText">

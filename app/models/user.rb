@@ -4,6 +4,6 @@ class User < ActiveRecord::Base
           :recoverable, :rememberable, :trackable, :validatable
   include DeviseTokenAuth::Concerns::User
   
-  validates :name, presence: true, length: {maximum: 50}
+  validates :name, length: {maximum: 50} # , presence: true
   validates :email, presence: true, length: {maximum: 256}
 end

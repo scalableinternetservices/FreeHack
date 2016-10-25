@@ -20,7 +20,7 @@ var Router = require('react-router').Router;
 var Route = require('react-router').Route;
 var browserHistory = require('react-router').browserHistory;
 var IndexRoute = require('react-router').IndexRoute;
-var PubSub = require('pubsub-js');
+var PubSub = require('../node_modules/j-toker/node_modules/pubsub-js');
 
 var Auth = require('j-toker');
 Auth.configure({apiUrl: ''});
@@ -92,7 +92,7 @@ var FreeNavbar = React.createClass({
       </div>
     );
   }
-})
+});
 
 ReactDOM.render((
   <Router history={browserHistory}>
