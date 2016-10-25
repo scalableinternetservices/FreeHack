@@ -11,11 +11,13 @@
   "dependencies": {
     "grunt": "^1.0.1",
     "grunt-webpack": "^1.0.18",
+    "j-toker": "0.0.10-beta3",
     "json-loader": "^0.5.4",
     "jsx-loader": "^0.13.2",
     "react": "^15.3.2",
     "react-bootstrap": "^0.30.5",
     "react-dom": "^15.3.2",
+    "react-router": "^3.0.0",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.2"
   }

@@ -25,13 +25,24 @@ module.exports = function(grunt) {
  	}
 
 	// Creates a special Commons bundle that our application can require from
-	var commonPlugin = [new webpack.optimize.CommonsChunkPlugin("vendors", "vendors.js")];
+	// Also sets environment for react building
+	var commonPlugin = [new webpack.optimize.CommonsChunkPlugin("vendors", "vendors.js"),
+						new webpack.DefinePlugin({
+					      'process.env':{
+					        'NODE_ENV': JSON.stringify('production')
+					      }
+					    })];
 	// We need to uglify that code on deploy
 	var uglifyPlugin = [new webpack.optimize.UglifyJsPlugin()];
 	// The module options takes loaders, in this case transforming JSX to normal javascript
 	var module = { loaders: [{ test: /\.js[x]?$/, loader: 'jsx' }, { test: /\.json$/, loader: 'json'}] };
 
 	grunt.initConfig({
+	  env : {
+	    dev : {
+	      NODE_ENV : JSON.stringify('production'),
+	    }
+	  },
 	  webpack: {
 	  	build: {
 	      entry: entry,

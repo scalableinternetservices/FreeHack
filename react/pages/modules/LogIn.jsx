@@ -1,18 +1,16 @@
 //  Log in page for user authentication
 
 var React = require('react');
-var ReactDOM = require('react-dom');
 
 // Bootstrap elements
-var Grid = require('react-bootstrap').Grid;
-var Row = require('react-bootstrap').Row;
-var Col = require('react-bootstrap').Col;
 var Button = require('react-bootstrap').Button;
 var FormGroup = require('react-bootstrap').FormGroup;
 var ControlLabel = require('react-bootstrap').ControlLabel;
 var FormControl = require('react-bootstrap').FormControl;
 var Alert = require('react-bootstrap').Alert;
 
+var Transition = require('react-router').Transition;
+var Auth = require('j-toker');
 
 var registerState = "register";
 var loginState = "login";
@@ -26,6 +24,9 @@ var LogInPage = React.createClass({
       loading: false,
       errors: ""
     };
+  },
+  componentDidMount: function() {
+    console.log('got log in page');
   },
   toggleAuthState: function() {
     if (this.state.authState == registerState) {
@@ -69,38 +70,41 @@ var LogInPage = React.createClass({
   },
   logInUser: function(email, password) {
     this.setState({loading: true, errors: ""});
+    Auth.emailSignIn({
+      email: email,
+      password: password
+    }).then(function(user) {
+        Transition.redirect('/');
+      }.bind(this))
+      .fail(function(resp) {
+        this.setState({errors: resp.errors.join('\n')});
+      });
   },
   render: function() {
     return (
       <div className="logInPage" style={{textAlign: "center"}}>
-        <Grid>
-          <Row>
-            <Col xs={12} md={4} mdPush={4}>
-              { this.state.errors.length > 0 ? 
-                <Alert bsStyle="danger">
-                  <h4>Error</h4>
-                  <p>{this.state.errors}</p>
-                </Alert>
-                :
-                null
-              }
-              { this.state.authState == registerState ?
-                <Register registerUser={this.registerUser} loading={this.state.loading} />
-                :
-                <LogIn logInUser={this.logInUser} loading={this.state.loading} />
-              }
-              <br />
-              <br />
-              <a onClick={this.toggleAuthState} >
-                { this.state.authState == registerState ?
-                  "Log In"
-                  :
-                  "Register"
-                }
-              </a>
-            </Col>
-          </Row>
-        </Grid>
+        { this.state.errors.length > 0 ? 
+          <Alert bsStyle="danger">
+            <h4>Error</h4>
+            <p>{this.state.errors}</p>
+          </Alert>
+          :
+          null
+        }
+        { this.state.authState == registerState ?
+          <Register registerUser={this.registerUser} loading={this.state.loading} />
+          :
+          <LogIn logInUser={this.logInUser} loading={this.state.loading} />
+        }
+        <br />
+        <br />
+        <a onClick={this.toggleAuthState} >
+          { this.state.authState == registerState ?
+            "Log In"
+            :
+            "Register"
+          }
+        </a>
       </div>
     );
   }
@@ -269,8 +273,4 @@ var LogIn = React.createClass({
   }
 });
 
-
-ReactDOM.render(
-  <LogInPage />,
-  document.getElementById('content')
-);
+module.exports = LogInPage;
