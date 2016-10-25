@@ -3,9 +3,6 @@
 var React = require('react');
 
 // Bootstrap Components
-var Grid = require('react-bootstrap').Grid;
-var Row = require('react-bootstrap').Row;
-var Col = require('react-bootstrap').Col;
 var Button = require('react-bootstrap').Button;
 var FormGroup = require('react-bootstrap').FormGroup;
 var ControlLabel = require('react-bootstrap').ControlLabel;
@@ -83,34 +80,28 @@ var LogInPage = React.createClass({
   render: function() {
     return (
       <div className="logInPage">
-        <Grid>
-          <Row>
-            <Col xs={12} md={6} mdPush={3}>
-              { this.state.errors.length > 0 ? 
-                <Alert bsStyle="danger">
-                  <h4>Error</h4>
-                  <p>{this.state.errors}</p>
-                </Alert>
-                :
-                null
-              }
-              { this.state.authState == registerState ?
-                <Register registerUser={this.registerUser} loading={this.state.loading} />
-                :
-                <LogIn logInUser={this.logInUser} loading={this.state.loading} />
-              }
-              <br />
-              <br />
-              <a onClick={this.toggleAuthState} >
-                { this.state.authState == registerState ?
-                  "Log In"
-                  :
-                  "Register"
-                }
-              </a>
-            </Col>
-          </Row>
-        </Grid>
+        { this.state.errors.length > 0 ? 
+          <Alert bsStyle="danger">
+            <h4>Error</h4>
+            <p>{this.state.errors}</p>
+          </Alert>
+          :
+          null
+        }
+        { this.state.authState == registerState ?
+          <Register registerUser={this.registerUser} loading={this.state.loading} />
+          :
+          <LogIn logInUser={this.logInUser} loading={this.state.loading} />
+        }
+        <br />
+        <br />
+        <a onClick={this.toggleAuthState} >
+          { this.state.authState == registerState ?
+            "Log In"
+            :
+            "Register"
+          }
+        </a>
       </div>
     );
   }

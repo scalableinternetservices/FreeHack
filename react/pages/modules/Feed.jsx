@@ -16,8 +16,6 @@ var Feed = React.createClass({
   componentWillMount: function() {
     // subscribe to user changes
     PubSub.subscribe('auth', function() {
-      console.log('updated user');
-      console.log(Auth.user);
       this.setState({user: Auth.user});
     }.bind(this));
   },
@@ -26,11 +24,11 @@ var Feed = React.createClass({
     Auth.validateToken()
     .then(function() {
       this.setState({user: Auth.user});
+      PubSub.publish('auth', 'hello world!');
     }.bind(this))
     .fail(function() {
       browserHistory.push('/login');
     });
-    PubSub.publish('auth', 'hello world!');
   },
   render: function() {
     return (
