@@ -38,9 +38,20 @@ var LogInPage = React.createClass({
       password: password1,
       password_confirmation: password2
     }).then(function(resp) {
-        this.setState({loading: false});
-        browserHistory.push('/');
+      
+      Auth.emailSignIn({
+        email: email,
+        password: password1
+      }).then(function(resp) {
+          this.setState({loading: false});
+          browserHistory.push('/');
+          PubSub.publish( 'auth', 'user registered' );
+        }.bind(this))
+        .fail(function(resp) {
+          this.setState({loading: false, errors: resp.data.errors.join("\n")});
+        }.bind(this));
       }.bind(this))
+      
       .fail(function(resp) {
         this.setState({loading: false, errors: resp.data.errors.full_messages.join(", \n")});
       }.bind(this));
