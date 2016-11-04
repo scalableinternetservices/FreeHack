@@ -53,3 +53,33 @@ body {
     max-width: 400px;
     margin: 15px auto;
 }
+
+/** Inputs **/
+
+.cancelLink, .delete {
+  color: #f0657f;
+}
+
+.cancelLink:hover, .delete:hover {
+  color: #db405d;
+}
+
+.inputEditWrapper .input-group-addon {
+  background-color: transparent;
+  border: none;
+}
+
+.verifiedGlyph {
+  vertical-align: top;
+  color: #5cb85c;
+}
+
+.placeholder, a.disabled, a.disabled:hover {
+  color: #b2b2b2;
+}
+
+.placeholder, a.disabled, a.disabled:hover {
+  color: #b2b2b2;
+}
+
+

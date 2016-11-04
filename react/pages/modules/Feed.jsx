@@ -2,9 +2,17 @@
 
 var React = require('react');
 
+// Bootstrap Components
+var Grid = require('react-bootstrap').Grid;
+var Row = require('react-bootstrap').Row;
+var Col = require('react-bootstrap').Col;
+
+// Custom Components
+var Account = require('./Account.jsx');
+
+// Data
 var Auth = require('j-toker');
 var PubSub = require('../../node_modules/j-toker/node_modules/pubsub-js');
-
 var browserHistory = require('react-router').browserHistory;
 
 var Feed = React.createClass({
@@ -29,8 +37,17 @@ var Feed = React.createClass({
   render: function() {
     return (
       <div className="feed">
-        <h2>Feed</h2>
-        <p>Content for {this.state.user && this.state.user.email}</p>
+        <Grid>
+          <Row>
+            <Col xs={8}>
+              <h2>Feed</h2>
+              <p>Content for {this.state.user && this.state.user.email}</p>
+            </Col>
+            <Col xs={4}>
+              <Account />
+            </Col>
+          </Row>
+        </Grid>
       </div>
     );
   }

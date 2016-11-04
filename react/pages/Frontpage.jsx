@@ -33,7 +33,6 @@ var App = React.createClass({
           <FreeNavbar />
           <Row>
             <Col xs={12}>
-              <h1>App</h1>
               {this.props.children}
             </Col>
           </Row>
