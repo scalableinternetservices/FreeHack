@@ -12,7 +12,8 @@ Rails.application.routes.draw do
         get 'posts', on: :member
       end
       resources :posts
-      get '/feed/:last_post_id', to: 'users#feed'
+      get '/feed', to: 'users#feed'
+      get '/feed/after/:last_post_id', to: 'users#feedAfter'
       # Client.where("orders_count = '2'")
     end
   end

@@ -2,7 +2,9 @@
 module Api::V1
   class UsersController < ApiController
     before_action :set_user, only: [:show, :update, :destroy, :posts]
-    before_action :authenticate_current_user, only: [:feed]
+    before_action :authenticate_current_user, only: [:feed, :feedAfter]
+    
+    POSTS_PER_PAGE = 10
 
     # GET /api/v1/users
     def index
@@ -19,10 +21,19 @@ module Api::V1
       render json: @user.posts()
     end
     
-    # GET /api/v1/feed/:last_post_id
+    # GET /api/v1/feed
     def feed
-      #follows = Follow.where("follower_id = #current_user.id").select("followed_id")
-      render json: @current_user
+      postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
+      feedPosts = Post.where("id IN (?)", postIds).limit(POSTS_PER_PAGE)
+      render json: feedPosts
+    end
+    
+    # GET /api/v1/feed/after/:last_post_id
+    def feedAfter
+      last_created_at = Post.find(params[:last_post_id]).created_at
+      postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
+      feedPosts = Post.where("id IN (?) AND created_at < ?", postIds, last_created_at).limit(POSTS_PER_PAGE)
+      render json: feedPosts
     end
   
     private
