@@ -3,12 +3,8 @@
 var React = require('react');
 
 // Bootstrap Components
-var Grid = require('react-bootstrap').Grid;
 var Row = require('react-bootstrap').Row;
 var Col = require('react-bootstrap').Col;
-
-// Custom Components
-var Account = require('./Account.jsx');
 
 // Data
 var Auth = require('j-toker');
@@ -37,17 +33,19 @@ var Feed = React.createClass({
   render: function() {
     return (
       <div className="feed">
-        <Grid>
-          <Row>
-            <Col xs={8}>
-              <h2>Feed</h2>
-              <p>Content for {this.state.user && this.state.user.email}</p>
-            </Col>
-            <Col xs={4}>
-              <Account />
-            </Col>
-          </Row>
-        </Grid>
+        <Row>
+          <Col xs={8}>
+            <h2>Feed</h2>
+            <p>Content for {this.state.user && this.state.user.email}</p>
+          </Col>
+          <Col xs={4}>
+            <div>
+              <h2>Profile</h2>
+              <p><b>Name:</b> {this.state.user && this.state.user.name}</p>
+              <p><b>Email:</b> {this.state.user && this.state.user.email}</p>
+            </div>
+          </Col>
+        </Row>
       </div>
     );
   }

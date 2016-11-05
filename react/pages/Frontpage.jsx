@@ -6,6 +6,7 @@ var ReactDOM = require('react-dom');
 // Custom Components
 var Feed = require('./modules/Feed.jsx');
 var LogIn = require('./modules/LogIn.jsx');
+var Account = require('./modules/Account.jsx');
 
 // Bootstrap Components
 var Grid = require('react-bootstrap').Grid;
@@ -57,10 +58,10 @@ var FreeNavbar = React.createClass({
   handleSelect: function(key) {
     switch(key) {
       case 1:
-        browserHistory.push('/feed');
+        browserHistory.push('/');
         break;
       case 2:
-        browserHistory.push('/more');
+        browserHistory.push('/profile');
         break;
       case 4:
         // sign out
@@ -81,7 +82,7 @@ var FreeNavbar = React.createClass({
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav bsStyle="pills" onSelect={this.handleSelect}>
-              <NavItem disabled={!this.state.signedIn} eventKey={2}>More</NavItem>
+              <NavItem disabled={!this.state.signedIn} eventKey={2}>Profile</NavItem>
             </Nav>
             <Nav pullRight bsStyle="pills" onSelect={this.handleSelect} style={{marginRight: "0"}}>
               <NavItem disabled={!this.state.signedIn} className="signout" eventKey={4}>Sign Out</NavItem>
@@ -98,6 +99,7 @@ ReactDOM.render((
     <Route path="/" component={App}>
       <IndexRoute component={Feed} />
       <Route path="/login" component={LogIn} />
+      <Route path="/profile" component={Account} />
     </Route>
   </Router>
 ), document.getElementById('content'));

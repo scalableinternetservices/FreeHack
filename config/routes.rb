@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   # We've disabled omniauth
-  mount_devise_token_auth_for 'User', at: 'auth', skip: [:omniauth_callbacks]
+  mount_devise_token_auth_for 'User', at: 'auth', skip: [:omniauth_callbacks], controllers: {
+          registrations:  'api/v1/registrations'
+        }
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   
   root 'api/v1/users#index'
