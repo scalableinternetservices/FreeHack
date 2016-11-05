@@ -36,5 +36,7 @@ module Cs188RailsProject
         resource '*', :headers => :any, :methods => [:get, :post, :options]
       end
     end
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
   end
 end
