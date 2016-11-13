@@ -28,19 +28,19 @@ module Api::V1
     # POST /posts/1/react/:reaction
     def react
       type = params[:reaction]
-      action = params[:action]
+      action = params[:desired]
       if action == "react"
         if type == "wow"
           wow = WowReaction.new(post: @post, user: @current_user)
           if wow.save
-            render json: @post
+            render json: @post, current_user_id: @current_user.id
           else
             render json: wow.errors, status: :unprocessable_entity
           end
         elsif type == "like"
           like = LikeReaction.new(post: @post, user: @current_user)
           if like.save
-            render json: @post
+            render json: @post, current_user_id: @current_user.id
           else
             render json: like.errors, status: :unprocessable_entity
           end
@@ -48,13 +48,13 @@ module Api::V1
       else
         if type == "wow"
           if WowReaction.destroy_all(post: @post, user: @current_user)
-            render json: @post
+            render json: @post, current_user_id: @current_user.id
           else
             render json: {type: "unreact", success: "false"}
           end
         elsif type == "like"
           if LikeReaction.destroy_all(post: @post, user: @current_user)
-            render json: @post
+            render json: @post, current_user_id: @current_user.id
           else
             render json: {type: "unreact", success: "false"}
           end
