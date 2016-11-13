@@ -16,7 +16,7 @@ Rails.application.routes.draw do
       resources :posts
       get '/feed', to: 'users#feed'
       get '/feed/after/:last_post_id', to: 'users#feedAfter'
-      # Client.where("orders_count = '2'")
+      get '/follow', to: 'users#follow'
     end
   end
   
