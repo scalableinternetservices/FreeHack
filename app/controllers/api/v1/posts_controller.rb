@@ -2,16 +2,16 @@
 module Api::V1
   class PostsController < ApiController
     before_action :set_post, only: [:show, :update, :destroy, :react]
-    before_action :authenticate_current_user, only: [:create, :update, :destroy, :react]
+    before_action :authenticate_current_user, only: [:create, :update, :destroy, :react, :show, :index]
   
     # GET /posts
     def index
-      render json: Post.all
+      render json: Post.all, current_user_id: @current_user.id
     end
   
     # GET /posts/1
     def show
-      render json: @post
+      render json: @post, current_user_id: @current_user.id
     end
   
     # POST /posts

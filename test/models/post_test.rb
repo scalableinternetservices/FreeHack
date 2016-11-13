@@ -3,7 +3,7 @@ require 'test_helper'
 class PostTest < ActiveSupport::TestCase
   def setup
     @user = User.create(name: "Pink Waters", email: "hardrock@example.com", password: "putapasswordhere")
-    @post = Post.new(user_id: @user.id, content: "\u{00A9}")
+    @post = Post.new(user_id: @user.id, content: ":joy: :joy: :astonished:")
   end
   
   test "test post should be valid" do
