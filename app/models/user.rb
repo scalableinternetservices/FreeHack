@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
   validates :name, length: {maximum: 50} # , presence: true
   validates :email, presence: true, length: {maximum: 256}
   
+  #validates_uniqueness_of :name
+  
   has_many :posts
   has_many :follows
 end

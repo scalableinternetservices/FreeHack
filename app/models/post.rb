@@ -1,6 +1,8 @@
 class Post < ApplicationRecord
   belongs_to :user
   has_many :channels
+  has_many :wow_reactions
+  has_many :like_reactions
   
   default_scope { order(created_at: :desc) }
   

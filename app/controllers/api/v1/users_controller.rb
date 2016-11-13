@@ -46,13 +46,16 @@ module Api::V1
       if type == "follow"
         follow = Follow.new(followed_id: other_id, follower: @current_user)
         if follow.save
-          render json: {type:"follow", success: "true"}
+          render json: follow, status: :created, location: follow
         else 
-          render json: {type:"follow", success: "false"}
+          render json: follow.errors, status: :unprocessable_entity
         end
       else
-        Follow.destroy_all(followed_id: other_id, follower: @current_user)
-        render json: {type:"unfollow", success: "true"}
+        if Follow.destroy_all(followed_id: other_id, follower: @current_user)
+          render json: {type:"unfollow", success: "true"}
+        else
+          render json: {type: "unfollow", success: "false"}
+        end
       end
     end
   

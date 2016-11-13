@@ -13,10 +13,12 @@ Rails.application.routes.draw do
       resources :users do
         get 'posts', on: :member
       end
-      resources :posts
+      resources :posts do
+        post 'react', on: :member
+      end
       get '/feed', to: 'users#feed'
       get '/feed/after/:last_post_id', to: 'users#feedAfter'
-      get '/follow', to: 'users#follow'
+      post '/follow', to: 'users#follow'
     end
   end
   
