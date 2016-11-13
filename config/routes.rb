@@ -12,13 +12,13 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users do
         get 'posts', on: :member
+        post 'follow', to: :member
       end
       resources :posts do
         post 'react', on: :member
       end
       get '/feed', to: 'users#feed'
       get '/feed/after/:last_post_id', to: 'users#feedAfter'
-      post '/follow', to: 'users#follow'
     end
   end
   

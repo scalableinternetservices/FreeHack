@@ -9,6 +9,5 @@ class User < ActiveRecord::Base
   
   #validates_uniqueness_of :name
   
-  has_many :posts
-  has_many :follows
+  has_many :posts, :dependent => :delete_all
 end

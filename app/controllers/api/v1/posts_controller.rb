@@ -16,11 +16,10 @@ module Api::V1
   
     # POST /posts
     def create
-      post_params.user_id = @current_user.id
-      @post = Post.new(post_params)
+      @post = Post.new(user: @current_user, content: params[:content])
   
       if @post.save
-        render json: @post, status: :created, location: @post
+        render json: @post, status: :created
       else
         render json: @post.errors, status: :unprocessable_entity
       end
@@ -34,14 +33,14 @@ module Api::V1
         if type == "wow"
           wow = WowReaction.new(post: @post, user: @current_user)
           if wow.save
-            render json: wow, status: :created
+            render json: @post
           else
             render json: wow.errors, status: :unprocessable_entity
           end
         elsif type == "like"
           like = LikeReaction.new(post: @post, user: @current_user)
           if like.save
-            render json: like, status: :created
+            render json: @post
           else
             render json: like.errors, status: :unprocessable_entity
           end
@@ -49,13 +48,13 @@ module Api::V1
       else
         if type == "wow"
           if WowReaction.destroy_all(post: @post, user: @current_user)
-            render json: {type:"unreact", success: "true"}
+            render json: @post
           else
             render json: {type: "unreact", success: "false"}
           end
         elsif type == "like"
           if LikeReaction.destroy_all(post: @post, user: @current_user)
-            render json: {type:"unreact", success: "true"}
+            render json: @post
           else
             render json: {type: "unreact", success: "false"}
           end
@@ -66,7 +65,7 @@ module Api::V1
     # PATCH/PUT /posts/1
     def update
       if @post.user == @current_user && @post.update(post_params)
-        render json: @post
+        render json: @post, current_user_id: @current_user.id
       else
         render json: @post.errors, status: :unprocessable_entity
       end
