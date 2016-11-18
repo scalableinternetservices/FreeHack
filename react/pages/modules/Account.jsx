@@ -31,6 +31,16 @@ var Account = React.createClass({
       name: text
     });
   },
+  updateNickname: function(text) {
+    Auth.updateAccount({
+      nickname: text
+    });
+  },
+  updateBio: function(text) {
+    Auth.updateAccount({
+      bio: text
+    });
+  },
   render: function() {
     return (
       <div className="account">
@@ -39,6 +49,10 @@ var Account = React.createClass({
             <h2>Account Details</h2>
             <InputEditableTextField title="Name" placeholder="Enter name"
               buttonTitle="Submit" currentValue={this.state.user.name} onSubmit={this.updateName} />
+            <InputEditableTextField title="Nickname" placeholder="Enter nickname"
+              buttonTitle="Submit" currentValue={this.state.user.nickname} onSubmit={this.updateNickname} />
+            <InputEditableTextField title="Bio" placeholder="Enter bio"
+              buttonTitle="Submit" currentValue={this.state.user.bio} onSubmit={this.updateBio} />
           </Col>
         </Row>
       </div>

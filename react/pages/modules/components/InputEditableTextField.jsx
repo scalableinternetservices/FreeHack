@@ -1,14 +1,12 @@
 // InputEditableTextField.jsx
 
 var React = require('react');
-var ReactDOM = require('react-dom');
 
 // Bootstrap elements
 var Form = require('react-bootstrap').Form;
 var FormGroup = require('react-bootstrap').FormGroup;
 var FormControl = require('react-bootstrap').FormControl;
 var ControlLabel = require('react-bootstrap').ControlLabel;
-var Button = require('react-bootstrap').Button;
 
 /**
 *  Show current saved value for a text field and let user update the field and submit changes
@@ -48,7 +46,7 @@ var InputEditableTextField = React.createClass({
   render: function() {
     return (
       <div className="inputEditableTextField">
-        <Form inline>
+        <Form inline style={{clear: "both"}}>
             <FormGroup style={{margin: "5px 10px 0 0"}}>
                 <ControlLabel>
                     {this.props.title}
@@ -65,9 +63,9 @@ var InputEditableTextField = React.createClass({
                 }
             </FormGroup>
             <FormGroup style={{float: "right", margin: "5px auto"}}>
-                <Button onClick={this.state.editable ? this.handleSubmit : this.toggleEditableField}>
+                <a onClick={this.state.editable ? this.handleSubmit : this.toggleEditableField}>
                     {this.state.editable ? "Submit" : "Edit"}
-                </Button>
+                </a>
                 {this.state.editable ?
                 <a style={{paddingLeft: "10px"}} onClick={this.toggleEditableField}>
                 Cancel

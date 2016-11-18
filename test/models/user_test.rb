@@ -52,4 +52,21 @@ class UserTest < ActiveSupport::TestCase
     @user.save
     assert_not @dup_user.valid?
   end
+  
+  test "bio should allow emojis" do
+    @user.bio = ":nerd: :astonished: :nerd:"
+    assert @user.valid?
+  end
+  
+  test "bio should allow only emojis" do
+    @user.bio = "Something about a disadvantanged youth~"
+    assert_not @user.valid?
+  end
+  
+  test "name should be unique" do
+    @dup_user = @user.dup
+    @dup_user.name = @user.name.upcase
+    @user.save
+    assert_not @dup_user.valid?
+  end
 end

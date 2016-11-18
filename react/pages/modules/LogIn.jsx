@@ -142,7 +142,7 @@ var Register = React.createClass({
             controlId="formBasicText">
             <ControlLabel>Password</ControlLabel>
             <FormControl
-              type="text"
+              type="password"
               value={this.state.passwordValue}
               placeholder="Enter Password"
               onChange={this.handlePasswordChange} />
@@ -152,7 +152,7 @@ var Register = React.createClass({
             controlId="formBasicText">
             <ControlLabel>Confirm Password</ControlLabel>
             <FormControl
-              type="text"
+              type="password"
               value={this.state.passwordConfirmationValue}
               placeholder="Enter Password Again"
               onChange={this.handlePasswordConfirmationChange} />
@@ -205,7 +205,7 @@ var LogIn = React.createClass({
             controlId="formBasicText">
             <ControlLabel>Password</ControlLabel>
             <FormControl
-              type="text"
+              type="password"
               value={this.state.passwordValue}
               placeholder="Enter Password"
               onChange={this.handlePasswordChange} />
