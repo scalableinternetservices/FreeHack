@@ -7,6 +7,7 @@ var ReactDOM = require('react-dom');
 var Feed = require('./modules/Feed.jsx');
 var LogIn = require('./modules/LogIn.jsx');
 var Account = require('./modules/Account.jsx');
+var User = require('./modules/User.jsx');
 
 // Bootstrap Components
 var Grid = require('react-bootstrap').Grid;
@@ -100,6 +101,7 @@ ReactDOM.render((
       <IndexRoute component={Feed} />
       <Route path="/login" component={LogIn} />
       <Route path="/profile" component={Account} />
+      <Router path="/user/:userID" components={User} />
     </Route>
   </Router>
 ), document.getElementById('content'));

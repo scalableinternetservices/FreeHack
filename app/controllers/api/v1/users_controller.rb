@@ -2,7 +2,7 @@
 module Api::V1
   class UsersController < ApiController
     before_action :set_user, only: [:show, :update, :destroy, :posts]
-    before_action :authenticate_current_user, only: [:feed, :feedAfter, :follow]
+    before_action :authenticate_current_user, only: [:feed, :feedAfter, :follow, :show, :posts]
     
     POSTS_PER_PAGE = 10
 
@@ -13,19 +13,19 @@ module Api::V1
   
     # GET /api/v1/users/1
     def show
-      render json: @user
+      render_json(@user)
     end
     
     # GET /api/v1/users/1/posts
     def posts
-      render json: @user.posts()
+      render_json(@user.posts())
     end
     
     # GET /api/v1/feed
     def feed
       postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
       feedPosts = Post.where("id IN (?)", postIds).limit(POSTS_PER_PAGE)
-      render json: feedPosts, current_user_id: @current_user.id
+      render_json(feedPosts)
     end
     
     # GET /api/v1/feed/after/:last_post_id
@@ -33,24 +33,25 @@ module Api::V1
       last_created_at = Post.find(params[:last_post_id]).created_at
       postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
       feedPosts = Post.where("id IN (?) AND created_at < ?", postIds, last_created_at).limit(POSTS_PER_PAGE)
-      render json: feedPosts, current_user_id: @current_user.id
+      render_json(feedPosts)
     end
     
     # GET /api/v1/users/1/follow
     def follow
       # 'follow' / 'unfollow'
       type = params[:type]
+      user_id = params[:user_id]
       
       if type == "follow"
-        follow = Follow.new(followed_id: params[:user_id], follower: @current_user)
+        follow = Follow.new(followed_id: user_id, follower: @current_user)
         if follow.save
-          render json: User.find(:user_id)
+          render_json(User.find(user_id))
         else 
           render json: follow.errors, status: :unprocessable_entity
         end
       else
-        if Follow.destroy_all(followed_id: params[:user_id], follower: @current_user)
-          render json: User.find(:user_id)
+        if Follow.destroy_all(followed_id: user_id, follower: @current_user)
+          render_json(User.find(user_id))
         else
           render json: {type: "unfollow", success: "false"}
         end

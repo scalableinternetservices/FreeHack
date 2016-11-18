@@ -54,7 +54,7 @@ var InputEditableTextField = React.createClass({
                     {this.props.title}
                 </ControlLabel>
             </FormGroup>
-            <FormGroup style={{margin: "5px auto"}}>
+            <FormGroup style={{margin: "5px auto 0 auto"}}>
                 {this.state.editable ?
                 <FormControl type="text" ref={function(input){this.textInput = input}}
                     onChange={this.handleChange} placeholder={this.props.placeholder} />
@@ -68,6 +68,11 @@ var InputEditableTextField = React.createClass({
                 <Button onClick={this.state.editable ? this.handleSubmit : this.toggleEditableField}>
                     {this.state.editable ? "Submit" : "Edit"}
                 </Button>
+                {this.state.editable ?
+                <a style={{paddingLeft: "10px"}} onClick={this.toggleEditableField}>
+                Cancel
+                </a>
+                : null}
             </FormGroup>
         </Form>
       </div>

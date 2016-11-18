@@ -6,6 +6,7 @@ var React = require('react');
 var ReactEmoji = require('react-emoji');
 
 var Button = require('react-bootstrap').Button;
+var Link = require('react-router').Link;
 // var Glyphicon = require('react-bootstrap').Glyphicon;
 
 var urls = {
@@ -20,7 +21,7 @@ var urls = {
  **/
 var Post = React.createClass({
   toggleReaction: function(reaction, action) {
-    var reactURL = urls.react(this.props.post.id)
+    var reactURL = urls.react(this.props.post.id);
     $.ajax({
       url: reactURL,
       dataType: 'json',
@@ -43,7 +44,7 @@ var Post = React.createClass({
   render: function() {
     return (
       <div className="post">
-        <h4>{this.props.post.user.name}</h4>
+        <h4><Link to={"/user/" + this.props.post.user.id}>{this.props.post.user.name}</Link></h4>
         <p>{ReactEmoji.emojify(this.props.post.content)}</p>
         <Button onClick={this.toggleLike}
           style={(this.props.post.liked === "true") ? {backgroundColor: "#9dc2eb"} : null}>

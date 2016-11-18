@@ -7,6 +7,14 @@ module Api::V1
     def authenticate_current_user
        head :unauthorized if get_current_user.nil?
     end
+    
+    def render_json(content)
+      render json: content, current_user_id: @current_user.id
+    end
+    
+    def home
+      render html: File.read("public/index.html").html_safe
+    end
 
     # manual override current_user check for authentication
     # https://github.com/lynndylanhurley/devise_token_auth/issues/74

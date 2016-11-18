@@ -23,5 +23,5 @@ Rails.application.routes.draw do
   end
   
   # redirect all unknown to root
-  get '*path' => redirect('/')
+  get '*path', to: 'api/v1/api#home'
 end
