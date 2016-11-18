@@ -1,12 +1,14 @@
 // InputEditableTextField.jsx
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 // Bootstrap elements
 var Form = require('react-bootstrap').Form;
 var FormGroup = require('react-bootstrap').FormGroup;
 var FormControl = require('react-bootstrap').FormControl;
 var ControlLabel = require('react-bootstrap').ControlLabel;
+var Glyphicon = require('react-bootstrap').Glyphicon;
 
 /**
 *  Show current saved value for a text field and let user update the field and submit changes
@@ -28,25 +30,36 @@ var ControlLabel = require('react-bootstrap').ControlLabel;
 */
 var InputEditableTextField = React.createClass({
   getInitialState: function() {
-    return {value: '', editable: false, currentlyEditing: false};
+    return {
+        value: this.props.value,
+        editable: false,
+        currentlyEditing: false
+    };
   },
   handleChange: function(e) {
     this.setState({value: e.target.value, currentlyEditing: false});
   },
   toggleEditableField: function(e) {
-    this.setState({value: this.props.currentValue, editable: !this.state.editable, currentlyEditing: true});
-    if (this.state.editable) {
-        this.textInput.focus();
+    var shouldEdit = !this.state.editable;
+    this.setState({value: this.props.currentValue, editable: shouldEdit, currentlyEditing: true});
+    if (shouldEdit) {
+        setTimeout(function() {
+            ReactDOM.findDOMNode(this.textInput).focus(); 
+        }, 100);
     }
   },
   handleSubmit: function() {
     this.props.onSubmit(this.state.value);
     this.setState({value: '', editable: false});
   },
+  handleEnter: function(e) {
+    e.preventDefault();
+    this.handleSubmit(); 
+  },
   render: function() {
     return (
       <div className="inputEditableTextField">
-        <Form inline style={{clear: "both"}}>
+        <Form inline style={{clear: "both"}} onSubmit={this.handleEnter}>
             <FormGroup style={{margin: "5px 10px 0 0"}}>
                 <ControlLabel>
                     {this.props.title}
@@ -54,11 +67,16 @@ var InputEditableTextField = React.createClass({
             </FormGroup>
             <FormGroup style={{margin: "5px auto 0 auto"}}>
                 {this.state.editable ?
-                <FormControl type="text" ref={function(input){this.textInput = input}}
+                <FormControl type="text" ref={function(input){console.log('focusing', input);this.textInput = input}}
                     onChange={this.handleChange} placeholder={this.props.placeholder} />
                 :
                 <ControlLabel style={{color: "grey"}}>
-                    {this.props.currentValue}
+                    {this.props.currentValue}&emsp;
+                    { this.props.verified ?
+                    <Glyphicon />
+                    :
+                    null
+                    }
                 </ControlLabel>
                 }
             </FormGroup>

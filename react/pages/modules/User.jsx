@@ -2,6 +2,7 @@
 // Profile page of user (logged in or not)
 
 var React = require('react');
+var ReactEmoji = require('react-emoji');
 
 // Bootstrap Components
 var Button = require('react-bootstrap').Button;
@@ -50,8 +51,10 @@ var User = React.createClass({
   },
   render: function() {
     return (
-      <div className="user">
+      <div className="user" style={{textAlign: "left"}}>
         <h2>{this.state.user && this.state.user.name}</h2>
+        <p>{this.state.user && this.state.user.nickname}</p>
+        <p>{ReactEmoji.emojify(this.state.user && this.state.user.bio)}</p>
         <Button onClick={this.toggleFollow}>
         {this.state.user && this.state.user.following === "true" ? "Unfollow" : "Follow"}
         </Button>

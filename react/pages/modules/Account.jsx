@@ -43,7 +43,7 @@ var Account = React.createClass({
   },
   render: function() {
     return (
-      <div className="account">
+      <div className="account" style={{textAlign: "left"}}>
         <Row>
           <Col xs={12} md={6} mdPush={3}>
             <h2>Account Details</h2>
