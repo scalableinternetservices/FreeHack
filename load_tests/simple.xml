@@ -2,7 +2,7 @@
 
 <?xml version="1.0"?>
 <!DOCTYPE tsung SYSTEM "/home/ec2-user/opt/tsung-1.5.0/share/tsung/tsung-1.0.dtd">
-<tsung loglevel="notice" version="1.0">
+<tsung loglevel="notice" version="1.0" dumptraffic="true">
 
   <!-- Client side setup -->
   <clients>
@@ -47,62 +47,97 @@
       <setdynvars sourcetype="random_number" start="1000" end="9999999">
         <var name="rand"/>
       </setdynvars>
+      <!-- Load homepage: '/' -->
       <request>
         <http url='/' version='1.1' method='GET'></http>
       </request>
       
       <thinktime value="1" random="true"></thinktime>
       
+      <!-- Register account: '/auth' -->
       <request subst="true">
+        <!-- Save cookie variables from response header -->
         <dyn_variable name="userID" jsonpath="response.data.id" />
+        <dyn_variable name="access_token" header="access-token" />
+        <dyn_variable name="token_type" header="token-type" />
+        <dyn_variable name="uid" header="uid" />
+        <dyn_variable name="expiry" header="expiry" />
+        <dyn_variable name="client" header="client" />
         <http url='/auth' version='1.1' method='POST' contents="email=user%%_rand%%%40gmail.com&amp;password=password&amp;password_confirmation=password"></http>
       </request>
       
       <thinktime value="1" random="true"></thinktime>
       
-      <request>
-        <http url='/api/v1/feed' version='1.1' method='GET'></http>
+      <!-- Load Feed data: '/api/v1/feed' -->
+      <request subst="true">
+        <http url='/api/v1/feed' version='1.1' method='GET'>
+          <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
+        </http>
       </request>
       
       <thinktime value="1" random="true"></thinktime>
       
+      <!-- Create post: '/api/v1/posts' -->
       <request>
-        <http url='/api/v1/posts' version='1.1' method='POST' contents="content=:astonished::astonished:"></http>
+        <http url='/api/v1/posts' version='1.1' method='POST' contents="content=:astonished::astonished:">
+          <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
+        </http>
       </request>
       
+      <!-- Create post: '/api/v1/posts' -->
       <request subst="true">
         <dyn_variable name="firstPostID" jsonpath="response.post.id" />
-        <http url='/api/v1/posts' version='1.1' method='POST' contents="content=:nerd:%20:nerd:%20:nerd:"></http>
+        <http url='/api/v1/posts' version='1.1' method='POST' contents="content=:nerd:%20:nerd:%20:nerd:">
+          <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
+        </http>
       </request>
       
       <thinktime value="1" random="true"></thinktime>
       
-      <request>
-        <http url='/api/v1/users/%%_userID%%' version='1.1' method='GET'></http>
+      <!-- Get user profile data: '/api/v1/users/:id' -->
+      <request subst="true">
+        <http url='/api/v1/users/%%_userID%%' version='1.1' method='GET'>
+          <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
+        </http>
       </request>
       
-      <request>
-        <http url='/api/v1/users/%%_userID%%/posts' version='1.1' method='GET'></http>
+      <!-- Get user's posts: '/api/v1/users/:id/posts' -->
+      <request subst="true">
+        <http url='/api/v1/users/%%_userID%%/posts' version='1.1' method='GET'>
+          <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
+        </http>
       </request>
       
       <thinktime value="1" random="true"></thinktime>
       
-      <request>
-        <http url='/api/v1/users/%%_userID%%/follow' version='1.1' method='POST' contents="type=follow"></http>
+      <!-- Follow user: '/api/v1/users/:id/follow' -->
+      <request subst="true">
+        <http url='/api/v1/users/%%_userID%%/follow' version='1.1' method='POST' contents="type=follow">
+          <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
+        </http>
       </request>
       
       <thinktime value="1" random="true"></thinktime>
       
-      <request>
-        <http url='/api/v1/feed' version='1.1' method='GET'></http>
+      <!-- Load Feed: '/api/v1/feed' -->
+      <request subst="true">
+        <http url='/api/v1/feed' version='1.1' method='GET'>
+          <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
+        </http>
       </request>
       
-      <request>
-        <http url='/api/v1/posts/%%_firstPostID%%/react' version='1.1' method='POST' contents="desired=react&amp;reaction=wow"></http>
+      <!-- React to post ("wow"): '/api/v1/posts/:id/react' -->
+      <request subst="true">
+        <http url='/api/v1/posts/%%_firstPostID%%/react' version='1.1' method='POST' contents="desired=react&amp;reaction=wow">
+          <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
+        </http>
       </request>
       
-      <request>
-        <http url='/auth' version='1.1' method='DELETE'></http>
+      <!-- Delete account: '/auth' -->
+      <request subst="true">
+        <http url='/auth' version='1.1' method='DELETE'>
+          <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
+        </http>
       </request>
       
     </session>
