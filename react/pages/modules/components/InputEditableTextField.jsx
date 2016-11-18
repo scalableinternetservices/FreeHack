@@ -67,7 +67,7 @@ var InputEditableTextField = React.createClass({
             </FormGroup>
             <FormGroup style={{margin: "5px auto 0 auto"}}>
                 {this.state.editable ?
-                <FormControl type="text" ref={function(input){console.log('focusing', input);this.textInput = input}}
+                <FormControl type="text" ref={function(input) {this.textInput = input}}
                     onChange={this.handleChange} placeholder={this.props.placeholder} />
                 :
                 <ControlLabel style={{color: "grey"}}>

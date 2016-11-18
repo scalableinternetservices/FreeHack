@@ -8,7 +8,7 @@ module Api::V1
        head :unauthorized if get_current_user.nil?
     end
     
-    def render_json(content)
+    def render_as_user(content)
       render json: content, current_user_id: @current_user.id
     end
     

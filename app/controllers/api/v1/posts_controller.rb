@@ -11,7 +11,7 @@ module Api::V1
   
     # GET /posts/1
     def show
-      render_json(@post)
+      render_as_user(@post)
     end
   
     # POST /posts
@@ -33,14 +33,14 @@ module Api::V1
         if type == "wow"
           wow = WowReaction.new(post: @post, user: @current_user)
           if wow.save
-            render_json(@post)
+            render_as_user(@post)
           else
             render json: wow.errors, status: :unprocessable_entity
           end
         elsif type == "like"
           like = LikeReaction.new(post: @post, user: @current_user)
           if like.save
-            render_json(@post)
+            render_as_user(@post)
           else
             render json: like.errors, status: :unprocessable_entity
           end
@@ -48,13 +48,13 @@ module Api::V1
       else
         if type == "wow"
           if WowReaction.destroy_all(post: @post, user: @current_user)
-            render_json(@post)
+            render_as_user(@post)
           else
             render json: {type: "unreact", success: "false"}
           end
         elsif type == "like"
           if LikeReaction.destroy_all(post: @post, user: @current_user)
-            render_json(@post)
+            render_as_user(@post)
           else
             render json: {type: "unreact", success: "false"}
           end
@@ -65,7 +65,7 @@ module Api::V1
     # PATCH/PUT /posts/1
     def update
       if @post.user == @current_user && @post.update(post_params)
-        render_json(@post)
+        render_as_user(@post)
       else
         render json: @post.errors, status: :unprocessable_entity
       end

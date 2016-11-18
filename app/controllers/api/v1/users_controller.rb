@@ -13,19 +13,19 @@ module Api::V1
   
     # GET /api/v1/users/1
     def show
-      render_json(@user)
+      render_as_user(@user)
     end
     
     # GET /api/v1/users/1/posts
     def posts
-      render_json(@user.posts())
+      render_as_user(@user.posts())
     end
     
     # GET /api/v1/feed
     def feed
       postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
       feedPosts = Post.where("id IN (?)", postIds).limit(POSTS_PER_PAGE)
-      render_json(feedPosts)
+      render_as_user(feedPosts)
     end
     
     # GET /api/v1/feed/after/:last_post_id
@@ -33,7 +33,7 @@ module Api::V1
       last_created_at = Post.find(params[:last_post_id]).created_at
       postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
       feedPosts = Post.where("id IN (?) AND created_at < ?", postIds, last_created_at).limit(POSTS_PER_PAGE)
-      render_json(feedPosts)
+      render_as_user(feedPosts)
     end
     
     # GET /api/v1/users/1/follow
@@ -45,13 +45,13 @@ module Api::V1
       if type == "follow"
         follow = Follow.new(followed_id: user_id, follower: @current_user)
         if follow.save
-          render_json(User.find(user_id))
+          render_as_user(User.find(user_id))
         else 
           render json: follow.errors, status: :unprocessable_entity
         end
       else
         if Follow.destroy_all(followed_id: user_id, follower: @current_user)
-          render_json(User.find(user_id))
+          render_as_user(User.find(user_id))
         else
           render json: {type: "unfollow", success: "false"}
         end

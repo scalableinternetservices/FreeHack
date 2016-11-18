@@ -9,7 +9,7 @@ class User < ApplicationRecord
   validates :bio, length: {maximum: 160}, :format => { :with => self.emojiPattern,
     :message => "Only Emojis" }
   
-  validates_uniqueness_of :name
+  # validates_uniqueness_of :name
   
   has_many :posts, :dependent => :delete_all
 end
