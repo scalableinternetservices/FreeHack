@@ -11,5 +11,7 @@ class User < ApplicationRecord
   
   # validates_uniqueness_of :name
   
-  has_many :posts, :dependent => :delete_all
+  has_many :posts, :dependent => :destroy
+  has_many :wow_reactions, :dependent => :destroy
+  has_many :like_reactions, :dependent => :destroy
 end
