@@ -1,8 +1,8 @@
 class Post < ApplicationRecord
   belongs_to :user
-  has_many :channels, :dependent => :delete_all
-  has_many :wow_reactions, :dependent => :delete_all
-  has_many :like_reactions, :dependent => :delete_all
+  has_many :channels, :dependent => :destroy
+  has_many :wow_reactions, :dependent => :destroy
+  has_many :like_reactions, :dependent => :destroy
   
   default_scope { order(created_at: :desc) }
   
