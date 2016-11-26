@@ -9,6 +9,7 @@ class User < ApplicationRecord
   validates :bio, length: {maximum: 160}, :format => { :with => self.emojiPattern,
     :message => "Only Emojis" }
   
+  ## note: should also require a name in sign_up if enforcing name uniqueness
   # validates_uniqueness_of :name
   
   has_many :posts, :dependent => :destroy

@@ -25,7 +25,7 @@ module Api::V1
       end
     end
     
-    # POST /posts/1/react/:reaction
+    # POST /posts/1/react
     def react
       type = params[:reaction]
       action = params[:desired]

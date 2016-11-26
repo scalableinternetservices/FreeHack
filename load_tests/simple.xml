@@ -42,14 +42,14 @@
       <setdynvars sourcetype="random_number" start="1000" end="9999999">
         <var name="rand"/>
       </setdynvars>
-      <!-- Load homepage: '/' -->
+      <!-- Load homepage: '/' (GET) -->
       <request>
         <http url='/' version='1.1' method='GET'></http>
       </request>
       
       <thinktime value="1" random="true"></thinktime>
       
-      <!-- Register account: '/auth' -->
+      <!-- Register account: '/auth' (POST) -->
       <request subst="true">
         <!-- Save cookie variables from response header -->
         <dyn_variable name="userID" jsonpath="data.id" />
@@ -63,7 +63,7 @@
       
       <thinktime value="1" random="true"></thinktime>
       
-      <!-- Load Feed data: '/api/v1/feed' -->
+      <!-- Load Feed data: '/api/v1/feed' (GET) -->
       <request subst="true">
         <http url='/api/v1/feed' version='1.1' method='GET'>
           <!-- Note: Cookie must be manually appended for authenticated routes -->
@@ -73,14 +73,14 @@
       
       <thinktime value="1" random="true"></thinktime>
       
-      <!-- Create post: '/api/v1/posts' -->
+      <!-- Create post: '/api/v1/posts' (POST) -->
       <request subst="true">
         <http url='/api/v1/posts' version='1.1' method='POST' contents="content=:astonished::astonished:">
           <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
         </http>
       </request>
       
-      <!-- Create post: '/api/v1/posts' -->
+      <!-- Create post: '/api/v1/posts' (POST) -->
       <request subst="true">
         <dyn_variable name="firstPostID" jsonpath="post.id" />
         <http url='/api/v1/posts' version='1.1' method='POST' contents="content=:nerd:%20:nerd:%20:nerd:">
@@ -90,14 +90,14 @@
       
       <thinktime value="1" random="true"></thinktime>
       
-      <!-- Get user profile data: '/api/v1/users/:id' -->
+      <!-- Get user profile data: '/api/v1/users/:id' (GET) -->
       <request subst="true">
         <http url='/api/v1/users/%%_userID%%' version='1.1' method='GET'>
           <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
         </http>
       </request>
       
-      <!-- Get user's posts: '/api/v1/users/:id/posts' -->
+      <!-- Get user's posts: '/api/v1/users/:id/posts' (GET) -->
       <request subst="true">
         <http url='/api/v1/users/%%_userID%%/posts' version='1.1' method='GET'>
           <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
@@ -106,7 +106,7 @@
       
       <thinktime value="1" random="true"></thinktime>
       
-      <!-- Follow user: '/api/v1/users/:id/follow' -->
+      <!-- Follow user: '/api/v1/users/:id/follow' (POST) -->
       <request subst="true">
         <http url='/api/v1/users/%%_userID%%/follow' version='1.1' method='POST' contents="type=follow">
           <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
@@ -115,23 +115,23 @@
       
       <thinktime value="1" random="true"></thinktime>
       
-      <!-- Load Feed: '/api/v1/feed' -->
+      <!-- Load Feed: '/api/v1/feed' (GET) -->
       <request subst="true">
         <http url='/api/v1/feed' version='1.1' method='GET'>
           <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
         </http>
       </request>
       
-      <!-- React to post ("wow"): '/api/v1/posts/:id/react' -->
+      <!-- React to post ("wow"): '/api/v1/posts/:id/react' (POST) -->
       <request subst="true">
         <http url='/api/v1/posts/%%_firstPostID%%/react' version='1.1' method='POST' contents="desired=react&amp;reaction=wow">
           <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
         </http>
       </request>
       
-      <!-- Update account: '/auth' -->
+      <!-- Update account: '/auth'(PUT)  -->
       <request subst="true">
-        <http url='/auth' version='1.1' method='PUT'>
+        <http url='/auth' version='1.1' method='PUT' contents="name=batman">
           <http_header name="access-token" value="%%_access_token%%" />
           <http_header name="token-type" value="%%_token_type%%" />
           <http_header name="expiry" value="%%_expiry%%" />
@@ -141,7 +141,7 @@
         </http>
       </request>
       
-      <!-- Get user profile data: '/api/v1/users/:id' -->
+      <!-- Get user profile data: '/api/v1/users/:id' (GET) -->
       <request subst="true">
         <http url='/api/v1/users/%%_userID%%' version='1.1' method='GET'>
           <http_header name="Cookie" value="authHeaders=%7B%22access-token%22%3A%22%%_access_token%%%22%2C%22token-type%22%3A%22%%_token_type%%%22%2C%22client%22%3A%22%%_client%%%22%2C%22expiry%22%3A%22%%_expiry%%%22%2C%22uid%22%3A%22%%_uid%%%22%7D" />
@@ -150,7 +150,7 @@
       
       <thinktime value="1" random="true"></thinktime>
       
-      <!-- Delete account: '/auth' -->
+      <!-- Delete account: '/auth' (DELETE) -->
       <request subst="true">
         <http url='/auth' version='1.1' method='DELETE'>
           <http_header name="access-token" value="%%_access_token%%" />
