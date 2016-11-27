@@ -8,4 +8,14 @@ class Post < ApplicationRecord
   
   validates :content, length: {maximum: 160}, presence: true, :format => { :with => self.emojiPattern,
     :message => "Only Emojis" }
+  
+  after_commit :flush_cache
+
+  def flush_cache
+    puts "cache: deleting post #{self.id}"
+    Rails.cache.delete("posts/#{self.id}")
+    
+    puts "cache: deleting posts for user #{self.user_id}"
+    Rails.cache.delete("users/#{self.user_id}/posts")
+  end
 end

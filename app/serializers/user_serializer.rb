@@ -2,7 +2,15 @@ class UserSerializer < ActiveModel::Serializer
   attributes :id, :name, :email, :bio, :following
   
   def following
-    if Follow.where(follower_id: @instance_options[:current_user_id], followed_id: object.id).count > 0
+    # get cached array of follows with serialized user as followed
+    follows = Rails.cache.fetch("users/#{object.id}/followers", expires_in: 24.hours) do
+      puts "cache: fetching followers for user: #{object.id}"
+      Follow.where(followed_id: object.id)
+    end
+    
+    # check for an instance with follower current_user
+    following = follows.select { |follow| follow.follower_id == @instance_options[:current_user_id] }
+    if following.count > 0
       return "true"
     else
       return "false"

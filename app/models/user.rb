@@ -15,4 +15,11 @@ class User < ApplicationRecord
   has_many :posts, :dependent => :destroy
   has_many :wow_reactions, :dependent => :destroy
   has_many :like_reactions, :dependent => :destroy
+  
+  after_commit :flush_cache
+
+  def flush_cache
+    puts "cache: deleting user #{self.id}"
+    Rails.cache.delete("users/#{self.id}")
+  end
 end

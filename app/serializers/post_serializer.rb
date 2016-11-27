@@ -3,15 +3,28 @@ class PostSerializer < ActiveModel::Serializer
   belongs_to :user, embed: :id, include: false
   
   def wow_count
-    object.wow_reactions.size
+    return Rails.cache.fetch("posts/#{object.id}/wow_count") do
+      puts "cache: fetching wow count for post: #{object.id}"
+      object.wow_reactions.size
+    end
   end
   
   def like_count
-    object.like_reactions.size
+    return Rails.cache.fetch("posts/#{object.id}/like_count") do
+      puts "cache: fetching like count for post: #{object.id}"
+      object.like_reactions.size
+    end
   end
   
   def liked
-    if LikeReaction.where(user_id: @instance_options[:current_user_id], post_id: object.id).count > 0
+    current_user_id = @instance_options[:current_user_id]
+    likes = Rails.cache.fetch("users/#{current_user_id}/likes", expires_in: 24.hours) do
+      puts "cache: fetching likes for user: #{current_user_id}"
+      LikeReaction.where(user_id: current_user_id)
+    end
+    
+    postLikes = likes.select { |like| like.post_id == object.id }
+    if postLikes.count > 0
       return "true"
     else
       return "false"
@@ -19,7 +32,14 @@ class PostSerializer < ActiveModel::Serializer
   end
   
   def wowed
-    if WowReaction.where(user_id: @instance_options[:current_user_id], post_id: object.id).count > 0
+    current_user_id = @instance_options[:current_user_id]
+    wows = Rails.cache.fetch("users/#{current_user_id}/wows", expires_in: 24.hours) do
+      puts "cache: fetching wows for user: #{current_user_id}"
+      WowReaction.where(user_id: current_user_id)
+    end
+    
+    postWows = wows.select { |wow| wow.post_id == object.id }
+    if postWows.count > 0
       return "true"
     else
       return "false"
