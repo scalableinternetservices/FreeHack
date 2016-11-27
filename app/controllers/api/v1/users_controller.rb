@@ -21,7 +21,7 @@ module Api::V1
       user_id = @user.id
       user_posts = Rails.cache.fetch("users/#{user_id}/posts", expires_in: 24.hours) do
         puts "cache: fetching posts for user #{user_id}"
-        @user.posts()
+        @user.posts().to_a
       end
       render_as_user(user_posts)
     end
@@ -31,7 +31,7 @@ module Api::V1
       feedPosts = Rails.cache.fetch("users/#{@current_user.id}/feed", expires_in: 10.minutes) do
         puts "cache: fetching feed for user #{@current_user.id}"
         postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
-        Post.where("id IN (?)", postIds).limit(POSTS_PER_PAGE)
+        Post.where("id IN (?)", postIds).limit(POSTS_PER_PAGE).to_a
       end
       render_as_user(feedPosts)
     end
@@ -43,7 +43,7 @@ module Api::V1
         puts "cache: fetching feed after #{lastPostID} for user #{@current_user.id}"
         last_created_at = Post.find(lastPostID).created_at
         postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
-        Post.where("id IN (?) AND created_at < ?", postIds, last_created_at).limit(POSTS_PER_PAGE)
+        Post.where("id IN (?) AND created_at < ?", postIds, last_created_at).limit(POSTS_PER_PAGE).to_a
       end
       render_as_user(feedPosts)
     end

@@ -20,10 +20,10 @@ class PostSerializer < ActiveModel::Serializer
     current_user_id = @instance_options[:current_user_id]
     likes = Rails.cache.fetch("users/#{current_user_id}/likes", expires_in: 24.hours) do
       puts "cache: fetching likes for user: #{current_user_id}"
-      LikeReaction.where(user_id: current_user_id)
+      LikeReaction.where(user_id: current_user_id).pluck(:post_id)
     end
     
-    postLikes = likes.select { |like| like.post_id == object.id }
+    postLikes = likes.select { |likeID| likeID == object.id }
     if postLikes.count > 0
       return "true"
     else
@@ -35,10 +35,10 @@ class PostSerializer < ActiveModel::Serializer
     current_user_id = @instance_options[:current_user_id]
     wows = Rails.cache.fetch("users/#{current_user_id}/wows", expires_in: 24.hours) do
       puts "cache: fetching wows for user: #{current_user_id}"
-      WowReaction.where(user_id: current_user_id)
+      WowReaction.where(user_id: current_user_id).pluck(:post_id)
     end
     
-    postWows = wows.select { |wow| wow.post_id == object.id }
+    postWows = wows.select { |wowID| wowID == object.id }
     if postWows.count > 0
       return "true"
     else
