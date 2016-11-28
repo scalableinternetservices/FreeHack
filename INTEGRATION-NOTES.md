@@ -146,21 +146,148 @@ With this front-end schema, we need:
     msg: "reason here"
 }
 ~~~~
- * Every entity that can be "listed" (tweets, connections, profiles) should allow polling for the X most recent,
-    with an optional "bookmark" id that says search after this point.
+
+Here is a full list of JSON requests and responses the front-end expects:
+
+ * Get tweets
 ~~~~
+// Route:
 {
-    bookmark: // an id for last returned result, search past this point
-}
-~~~~
- * Tweets should be searchable by the following JSON request:
-~~~~
-{
-    terms: [
+    // An optional search term array
+    terms: [{
         term: // a string representation of the term
         termType: // whether the term is a hashtag, mention, or string
-    ],
-    // Obviously, we can pass the bookmark as well:
-    bookmark: // same as #3
+    }],
+    bookmark: // only show me results past this id (for pagination)
 }
+
+// Expects
+{
+    tweets: [{
+        body: // emoji text representation,
+        userId: // string,
+        createdAt: // timestamp,
+        id: // the unique ID for the tweet
+    }],
+    bookmark: // the new bookmark, or false
+}
+~~~~
+ * Get tweets for user
+~~~~
+// Route:
+{
+    bookmark: // only show me results past this id (for pagination)
+}
+
+// Expects
+{
+    // An array of their tweets
+    tweets: [{
+        body: // emoji text representation,
+        userId: // string,
+        createdAt: // timestamp,
+        id: // the unique ID for the tweet
+    }],
+    bookmark: // the new bookmark, or false
+}
+~~~~
+ * Get replies for tweet
+~~~~
+// Route:
+{
+    bookmark: // only show me results past this id (for pagination)
+}
+
+// Expects
+{
+    // An array of replies
+    tweets: [{
+        body: // emoji text representation,
+        userId: // string,
+        createdAt: // timestamp,
+        id: // the unique ID for the tweet
+    }],
+    bookmark: // the new bookmark, or false
+}
+~~~~
+ * Post original tweet
+~~~~
+// Route:
+{
+    body: // emoji text representation
+}
+
+// Expects
+{
+    tweet: {
+        body: // emoji text representation,
+        user: // string,
+        createdAt: // timestamp,
+        id: // the unique ID of the newly created tweet
+    }
+}
+~~~~
+ * Post reply tweet
+~~~~
+// Route:
+{
+    emoji: // emoji text representation
+}
+
+// Expects
+{
+    tweet: {
+        body: // emoji text representation,
+        user: // string,
+        createdAt: // timestamp,
+        id: // the unique ID of the newly created reply tweet
+    }
+}
+~~~~
+* Delete tweet
+~~~~
+// Route:
+
+// Expects
+{
+   tweetId: // the id of the deleted tweet
+}
+~~~~
+ * Get connections for user
+~~~~
+// Route:
+{
+    bookmark: // only show me results past this id (for pagination)
+}
+
+// Expects
+{
+    connections: {[
+        connectionId: // the unique id for the connection
+        follower: // string => user id,
+        following: // string => user id
+    ]}
+    bookmark: // the new bookmark, or false
+}
+~~~~
+ * Delete connection for user (only your own)
+~~~~
+// Route:
+
+// Expects
+{
+    connectionId: // unique id of deleted connection
+}
+~~~~
+ * Login
+~~~~
+// Route:
+~~~~
+ * Logout
+~~~~
+// Route:
+~~~~
+ * Sign Up
+~~~~
+// Route:
 ~~~~
