@@ -24,7 +24,7 @@ Rails.application.configure do
   else
     config.action_controller.perform_caching = true
 
-    config.cache_store = :memory_store, { size: 16.megabytes }
+    config.cache_store = :dalli_store, { :pool_size => 5 }
   end
 
   # Don't care if the mailer can't send.
