@@ -152,6 +152,8 @@ Here is a full list of JSON requests and responses the front-end expects:
  * Get tweets
 ~~~~
 // Route:
+
+// Request
 {
     // An optional search term array
     terms: [{
@@ -175,6 +177,8 @@ Here is a full list of JSON requests and responses the front-end expects:
  * Get tweets for user
 ~~~~
 // Route:
+
+// Request
 {
     bookmark: // only show me results past this id (for pagination)
 }
@@ -194,6 +198,8 @@ Here is a full list of JSON requests and responses the front-end expects:
  * Get replies for tweet
 ~~~~
 // Route:
+
+// Request
 {
     bookmark: // only show me results past this id (for pagination)
 }
@@ -213,6 +219,8 @@ Here is a full list of JSON requests and responses the front-end expects:
  * Post original tweet
 ~~~~
 // Route:
+
+// Request
 {
     body: // emoji text representation
 }
@@ -230,6 +238,8 @@ Here is a full list of JSON requests and responses the front-end expects:
  * Post reply tweet
 ~~~~
 // Route:
+
+// Request
 {
     emoji: // emoji text representation
 }
@@ -256,6 +266,8 @@ Here is a full list of JSON requests and responses the front-end expects:
  * Get connections for user
 ~~~~
 // Route:
+
+// Request
 {
     bookmark: // only show me results past this id (for pagination)
 }
