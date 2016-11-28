@@ -274,11 +274,11 @@ Here is a full list of JSON requests and responses the front-end expects:
 
 // Expects
 {
-    connections: {[
+    connections: [{
         connectionId: // the unique id for the connection
         follower: // string => user id,
         following: // string => user id
-    ]}
+    }]
     bookmark: // the new bookmark, or false
 }
 ~~~~
