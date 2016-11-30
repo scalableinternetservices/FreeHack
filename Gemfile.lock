@@ -171,11 +171,12 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (~> 0.10.0)
+  activerecord-jdbcsqlite3-adapter
   byebug
   connection_pool
   devise_token_auth
   factory_girl_rails
-  jdbc-mysql
+  jdbc-sqlite3
   json
   listen (~> 3.0.5)
   rack-attack

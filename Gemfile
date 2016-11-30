@@ -21,7 +21,8 @@ gem 'active_model_serializers', '~> 0.10.0'
 gem 'devise_token_auth'
 
 gem 'json'
-gem 'jdbc-mysql', platform: :jruby
+gem 'jdbc-sqlite3', platform: :jruby
+gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
 gem 'connection_pool'
 
 group :development, :test do
