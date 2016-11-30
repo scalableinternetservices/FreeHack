@@ -1,6 +1,4 @@
 
-require 'flamegraph'
-
 module Api::V1
   class UsersController < ApiController
     before_action :set_user, only: [:show, :update, :destroy, :posts]
