@@ -48,6 +48,7 @@ GEM
     builder (3.2.2)
     byebug (9.0.6)
     concurrent-ruby (1.0.2)
+    connection_pool (2.2.1)
     devise (4.2.0)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -171,8 +172,10 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers (~> 0.10.0)
   byebug
+  connection_pool
   devise_token_auth
   factory_girl_rails
+  jdbc-mysql
   json
   listen (~> 3.0.5)
   rack-attack
