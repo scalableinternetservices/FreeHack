@@ -24,6 +24,7 @@ gem 'json'
 gem 'jdbc-sqlite3', platform: :jruby
 gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
 gem 'connection_pool'
+gem 'dalli'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
