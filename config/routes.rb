@@ -22,6 +22,8 @@ Rails.application.routes.draw do
     end
   end
   
+  # collect bottleneck data
+  get '/flame/:name', to: 'api/v1/api#flame'
   # redirect all unknown to root
   get '*path', to: 'api/v1/api#home'
 end

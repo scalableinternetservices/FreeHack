@@ -15,6 +15,10 @@ module Api::V1
     def home
       render html: File.read("public/index.html").html_safe
     end
+    
+    def flame
+      render html: File.read("public/flame/#{params[:name]}").html_safe
+    end
 
     # manual override current_user check for authentication
     # https://github.com/lynndylanhurley/devise_token_auth/issues/74

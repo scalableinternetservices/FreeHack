@@ -1,6 +1,9 @@
 class PostSerializer < ActiveModel::Serializer
+  cache key: 'post', expires_in: 1.hours
+  
   attributes :id, :content, :user, :wow_count, :like_count, :liked, :wowed
   belongs_to :user, embed: :id, include: false
+  
   
   def wow_count
     return Rails.cache.fetch("posts/#{object.id}/wow_count") do

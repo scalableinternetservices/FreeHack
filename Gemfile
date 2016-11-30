@@ -26,6 +26,10 @@ gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
 gem 'connection_pool'
 gem 'dalli'
 
+# debugging
+# gem 'flamegraph'
+# gem 'stackprof'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri

@@ -1,4 +1,6 @@
 
+require 'flamegraph'
+
 module Api::V1
   class UsersController < ApiController
     before_action :set_user, only: [:show, :update, :destroy, :posts]
@@ -18,32 +20,30 @@ module Api::V1
     
     # GET /api/v1/users/1/posts
     def posts
-      user_id = @user.id
-      user_posts = Rails.cache.fetch("users/#{user_id}/posts", expires_in: 24.hours) do
-        puts "cache: fetching posts for user #{user_id}"
-        @user.posts().to_a
+      posts = Rails.cache.fetch("users/#{@user.id}/posts", expires_in: 10.minutes) do
+        puts "cache: fetching post for user #{@user.id}"
+        Post.where(user_id: @user.id).includes(:user).all
       end
-      render_as_user(user_posts)
+      render_as_user(posts)
     end
     
     # GET /api/v1/feed
     def feed
-      feedPosts = Rails.cache.fetch("users/#{@current_user.id}/feed", expires_in: 10.minutes) do
-        puts "cache: fetching feed for user #{@current_user.id}"
+      posts = Rails.cache.fetch("users/#{@current_user.id}/feed", expires_in: 10.minutes) do
         postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
-        Post.where("id IN (?)", postIds).limit(POSTS_PER_PAGE).to_a
+        Post.where("id IN (?)", postIds).includes(:user).limit(POSTS_PER_PAGE).all
       end
-      render_as_user(feedPosts)
+      render_as_user(posts)
     end
     
     # GET /api/v1/feed/after/:last_post_id
     def feedAfter
       lastPostID = params[:last_post_id]
-      feedPosts = Rails.cache.fetch("users/#{@current_user.id}/feed/after/#{lastPostID}", expires_in: 10.minutes) do
+      feedPosts = Rails.cache.fetch("users/#{@current_user.id}/feed/after/#{lastPostID}", expires_in: 1.hour) do
         puts "cache: fetching feed after #{lastPostID} for user #{@current_user.id}"
         last_created_at = Post.find(lastPostID).created_at
         postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
-        Post.where("id IN (?) AND created_at < ?", postIds, last_created_at).limit(POSTS_PER_PAGE).to_a
+        Post.where("id IN (?) AND created_at < ?", postIds, last_created_at).includes(:user).limit(POSTS_PER_PAGE)
       end
       render_as_user(feedPosts)
     end
@@ -73,11 +73,7 @@ module Api::V1
     private
       # Use callbacks to share common setup or constraints between actions.
       def set_user
-        userID = params[:id]
-        @user = Rails.cache.fetch("users/#{userID}", expires_in: 24.hours) do
-          puts "cache: fetching user"
-          User.find(userID)
-        end
+        @user = User.find(params[:id])
       end
   
       # Only allow a trusted parameter "white list" through.
