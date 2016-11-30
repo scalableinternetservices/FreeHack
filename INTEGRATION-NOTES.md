@@ -5,140 +5,17 @@ client-side application.
 It's extremely important that the data returned from the server be denormalized
 as possible, as the state tree (aka the store) is optimized for "flat" data.
 
-Basically, avoid nesting while constructing JSONs on the server, if possible!
+So avoid nesting while constructing JSONs on the server, if possible!
 
-This is how I've organized the store client-side; I'm writing it out here
-since the front-end code does not make this evident unless you trace through
-the Redux logic:
+Note: j-toker wraps up all user model updates and login/registration flows, so don't worry about coding an API for that.
+Just be sure that the user model has the following extra fields:
 
-Three types of entity schemas on the front-end, corresponding to:
- 1. many-to-many => join table
- 2. one-to-one => id reference
- 3. one-to-many => xByY
+ * bio
+ * tagline
+ * profileColor
 
-Also note: If one needs to poll and cache new results, we also have the fields "fetching",
-"didinvalidate", etc. stored appropariately.
+With this in mind, we need:
 
-    store: {
-        auth: {
-            // Auth header info, returned by devise-token-auth
-        },
-        entities: {
-            users: {
-                byId: {
-                    id1: {
-                        handle: // string,
-                        bio: // string,
-                        tagline: // string
-                    }
-                },
-                // Preserve order returned by API
-                allIds: [id1]
-            },
-            connections: {
-                byId: {
-                    id1: {
-                        follower: // string => user id,
-                        following: // string => user id
-                    }
-                },
-                // Preserve order returned by API
-                allIds: [id1]
-            },
-            tweetsByUser: {
-                // Allows easy access to finding tweets by user
-                byId: {
-                    userId: {
-                        tweets: // an array of tweet ids,
-                        fetching: // boolean,
-                        didInvalidate: // boolean
-                    }
-                },
-                // Preserve order returned by API
-                allIds: [id1]
-            }
-            tweets: {
-                byId: {
-                    id1: {
-                        body: // emoji text representation,
-                        user: // string,
-                        createdAt: // timestamp
-                    }
-                },
-                // Preserve order returned by API
-                allIds:[id1]
-            },
-            repliesByTweet: {
-                byId: {
-                    id1: {
-                        replies: // an array of tweet ids,
-                        fetching: // refreshing from server,
-                        didInvalidate: // needs to be refreshed
-                    }
-                },
-                // Preserve order returned by API
-                allIds: [id1]
-            },
-            replies: {
-                byId: {
-                    id1: {
-                        ogTweet: // string,
-                        replyTweet: // string
-                    }
-                },
-                // Preserve order returned by API
-                allIds: [id1]
-            }
-        },
-        draftEntities: {
-            // A user is manipulating, but has not been committed to server.
-            // OR app is waiting for server response to committing manipulation.
-            // OR non-success returned by server (timeout, error).
-            tweets: {
-                byId: {
-                    id1: {
-                        // States relevant to manipulation
-                    }
-                },
-                allIds: [id1]
-            },
-            connections: {
-                byId: {
-                    id1: {
-                        // States relevant to manipulation
-                    }
-                },
-                allIds: [id1]
-            },
-            user: {
-                // Note: a user can only edit their own bio and tagline,
-                // so this will only ever have one entry
-                byId: {
-                    id1: {
-                        // States relevant to manipulation
-                    }
-                },
-                allIds: [id1]
-            },
-        },
-        uiData: {
-            // Filters, non-server-backed data and the likes
-            searchBar: {
-                terms: [
-                    term: // string rep,
-                    termType: // hashtag, mention, string
-                ],
-                active: // user is currently typing
-            },
-            // Like this is like a "visibility" filter
-            activeTweet: {
-                // simply a pointer
-            }
-        }
-    }
-
-With this front-end schema, we need:
- * All requests that successfully manipulate an entity should return the new representation of that entity.
  * All denied requests should return a standardized error JSON.  	
 ~~~~
 {
@@ -147,95 +24,154 @@ With this front-end schema, we need:
 }
 ~~~~
 
-Here is a full list of JSON requests and responses the front-end expects:
-
- * Get tweets
+ * GET most relevant, popular entities
+   * I'll pass what the user is currently typing (as terms) in the search bar to the API
+   * The frontend expects a SHORT (less than 10 for each) list of jsons for each relevant entity type
 ~~~~
-// Route:
+// Route: 
+
+// Request:
+{
+    // terms represent what the user is currently typing (in order, term-by-term)
+    terms:[
+        {
+            term: // the string representation of the term
+            termType: // whether the term is a HASHTAG, MENTION, or STRING denoted in all caps! 
+        }
+    ]
+}
+
+// Response:
+{
+    trendingHashtags: // array of strings,
+    // an array of (abbreviated) profiles
+    relevantProfiles: [
+        {
+            id: // the unique user id of the profile,
+            handle: // tweetmoji handle,
+            name: // the user's name
+        }
+    ]
+}
+~~~~
+
+ * GET tweets
+~~~~
+// Route: 
 
 // Request
 {
-    // An optional search term array
-    terms: [{
-        term: // a string representation of the term
-        termType: // whether the term is a hashtag, mention, or string
-    }],
-    bookmark: // only show me results past this id (for pagination)
+    // An optional terms array
+    terms:[
+        // Each term is an object
+        {
+            term: // a string representation of the term
+            termType: // whether the term is a HASHTAG, MENTION, or STRING denoted in all caps! 
+        }
+    ],
+    bookmark: // only show me results past this id (pagination, front-end extracts last id from the previous query by itself)
 }
 
 // Expects
 {
-    tweets: [{
-        body: // emoji text representation,
-        userId: // string,
-        createdAt: // timestamp,
-        id: // the unique ID for the tweet
-    }],
-    bookmark: // the new bookmark, or false
+    // An array of tweet objects
+    tweets: [
+        {
+            body: // emojione text representation,
+            user: {
+                // object representing the user who posted
+            }
+            createdAt: // timestamp,
+            id: // the unique ID for the tweet
+        }
+    ],
+    moreExist: // are there more results for this query, boolean
 }
 ~~~~
- * Get tweets for user
+
+ * GET tweets for user
 ~~~~
 // Route:
 
 // Request
 {
-    bookmark: // only show me results past this id (for pagination)
+    bookmark: // only show me results past this id (pagination, front-end extracts last id from the previous query by itself)
 }
 
 // Expects
 {
-    // An array of their tweets
-    tweets: [{
-        body: // emoji text representation,
-        userId: // string,
-        createdAt: // timestamp,
-        id: // the unique ID for the tweet
-    }],
-    bookmark: // the new bookmark, or false
+    // An array of tweet objects
+    tweets: [
+        {
+            body: // emojione text representation,
+            user: {
+                // object representing the user who posted
+            }
+            createdAt: // timestamp,
+            id: // the unique ID for the tweet
+        }
+    ],
+    moreExist: // are there more results for this query, boolean
 }
 ~~~~
- * Get replies for tweet
+
+ * GET replies for tweet
 ~~~~
 // Route:
 
 // Request
 {
-    bookmark: // only show me results past this id (for pagination)
+    bookmark: // only show me results past this id (pagination, front-end extracts last id from the previous query by itself)
 }
 
 // Expects
 {
-    // An array of replies
-    tweets: [{
-        body: // emoji text representation,
-        userId: // string,
-        createdAt: // timestamp,
-        id: // the unique ID for the tweet
-    }],
-    bookmark: // the new bookmark, or false
+    // An array of tweet objects
+    tweets: [
+        {
+            body: // emojione text representation,
+            user: {
+                // object representing the user who posted
+            }
+            createdAt: // timestamp,
+            id: // the unique ID for the tweet
+        }
+    ],
+    // An array of objects representing the join entries for each of these replies on the original tweet in the DB
+    joins: [
+        {
+            tweetId: // id of the original tweet,
+            replyTweetId: // id of the reply tweet,
+            id: // IMPORTANT! The id of the join
+        }
+    ]
+    moreExist: // are there more results for this query, boolean
 }
 ~~~~
- * Post original tweet
+
+ * POST original tweet
 ~~~~
 // Route:
 
 // Request
 {
-    body: // emoji text representation
+    body: // emojione text representation
 }
 
 // Expects
 {
     tweet: {
-        body: // emoji text representation,
-        user: // string,
+        body: // emojione text representation,
+        user: {
+            // object representing the user who posted
+        }
         createdAt: // timestamp,
-        id: // the unique ID of the newly created tweet
+        id: // the unique ID for the tweet
     }
 }
 ~~~~
- * Post reply tweet
+
+ * POST reply tweet
 ~~~~
 // Route:
 
@@ -246,7 +182,12 @@ Here is a full list of JSON requests and responses the front-end expects:
 
 // Expects
 {
-    tweet: {
+    originalTweetStats: {
+        wows: // int,
+        likes: // int
+        
+    }
+    replyTweet: {
         body: // emoji text representation,
         user: // string,
         createdAt: // timestamp,
@@ -254,15 +195,17 @@ Here is a full list of JSON requests and responses the front-end expects:
     }
 }
 ~~~~
+
 * Delete tweet
 ~~~~
 // Route:
 
 // Expects
 {
-   tweetId: // the id of the deleted tweet
+   id: // the id of the deleted tweet
 }
 ~~~~
+
  * Get connections for user
 ~~~~
 // Route:
@@ -274,32 +217,24 @@ Here is a full list of JSON requests and responses the front-end expects:
 
 // Expects
 {
-    connections: [{
-        connectionId: // the unique id for the connection
-        follower: // string => user id,
-        following: // string => user id
-    }]
+    // an array of connections
+    connections: [
+        {
+            follower: // string => user id,
+            following: // string => user id,
+            connectionId: // the unique id for the connection
+        }
+    ]
     bookmark: // the new bookmark, or false
 }
 ~~~~
+
  * Delete connection for user (only your own)
 ~~~~
 // Route:
 
 // Expects
 {
-    connectionId: // unique id of deleted connection
+    id: // unique id of deleted connection
 }
-~~~~
- * Login
-~~~~
-// Route:
-~~~~
- * Logout
-~~~~
-// Route:
-~~~~
- * Sign Up
-~~~~
-// Route:
 ~~~~
