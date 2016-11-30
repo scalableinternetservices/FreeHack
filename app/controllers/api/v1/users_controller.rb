@@ -41,7 +41,7 @@ module Api::V1
         puts "cache: fetching feed after #{lastPostID} for user #{@current_user.id}"
         last_created_at = Post.find(lastPostID).created_at
         postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
-        Post.where("id IN (?) AND created_at < ?", postIds, last_created_at).includes(:user).limit(POSTS_PER_PAGE)
+        Post.where("id IN (?) AND created_at < ?", postIds, last_created_at).includes(:user).limit(POSTS_PER_PAGE).all
       end
       render_as_user(feedPosts)
     end

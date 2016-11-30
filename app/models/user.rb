@@ -6,7 +6,7 @@ class User < ApplicationRecord
   
   validates :name, length: {maximum: 50} # , presence: true
   validates :email, presence: true, length: {maximum: 256}
-  validates :bio, length: {maximum: 160}, :format => { :with => self.emojiPattern,
+  validates :bio, length: {maximum: 160}, :format => { :with => @@emojiPattern,
     :message => "Only Emojis" }
   
   ## note: should also require a name in sign_up if enforcing name uniqueness
