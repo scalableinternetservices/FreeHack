@@ -1,5 +1,5 @@
 class PostSerializer < ActiveModel::Serializer
-  cache key: 'post', expires_in: 1.hours
+  cache key: 'post', expires_in: 1.hours, except: [:liked, :wowed, :wow_count, :like_count]
   
   attributes :id, :content, :user, :wow_count, :like_count, :liked, :wowed
   belongs_to :user, embed: :id, include: false
@@ -8,14 +8,14 @@ class PostSerializer < ActiveModel::Serializer
   def wow_count
     return Rails.cache.fetch("posts/#{object.id}/wow_count") do
       puts "cache: fetching wow count for post: #{object.id}"
-      object.wow_reactions.size
+      WowReaction.where(post_id: object.id).count
     end
   end
   
   def like_count
     return Rails.cache.fetch("posts/#{object.id}/like_count") do
       puts "cache: fetching like count for post: #{object.id}"
-      object.like_reactions.size
+      LikeReaction.where(post_id: object.id).count
     end
   end
   

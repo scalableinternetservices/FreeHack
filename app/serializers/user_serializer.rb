@@ -1,5 +1,5 @@
 class UserSerializer < ActiveModel::Serializer
-  cache key: 'user', expires_in: 1.hours
+  cache key: 'user', expires_in: 1.hours, except: [:following]
   
   attributes :id, :name, :email, :bio, :following
   
