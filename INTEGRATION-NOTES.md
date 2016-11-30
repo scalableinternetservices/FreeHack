@@ -90,7 +90,7 @@ Routes
 
  * GET tweets from search
 ~~~~
-// Route: /api/v1/feed (TO DO: pagination)
+// Route: /api/v1/search (TO DO: pagination)
 
 // Request
 {
