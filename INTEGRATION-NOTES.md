@@ -81,6 +81,8 @@ With this in mind, we need:
             user: {
                 // object representing the user who posted
             }
+            wows: // int,
+            likes: // int,
             createdAt: // timestamp,
             id: // the unique ID for the tweet
         }
@@ -107,6 +109,8 @@ With this in mind, we need:
             user: {
                 // object representing the user who posted
             }
+            wows: // int,
+            likes: // int,
             createdAt: // timestamp,
             id: // the unique ID for the tweet
         }
@@ -133,6 +137,8 @@ With this in mind, we need:
             user: {
                 // object representing the user who posted
             }
+            wows: // int,
+            likes: // int,
             createdAt: // timestamp,
             id: // the unique ID for the tweet
         }
@@ -165,6 +171,8 @@ With this in mind, we need:
         user: {
             // object representing the user who posted
         }
+        wows: // int,
+        likes: // int,
         createdAt: // timestamp,
         id: // the unique ID for the tweet
     }
@@ -182,16 +190,22 @@ With this in mind, we need:
 
 // Expects
 {
-    originalTweetStats: {
-        wows: // int,
-        likes: // int
-        
-    }
+    // returned the created reply
     replyTweet: {
-        body: // emoji text representation,
-        user: // string,
+        body: // emojione text representation,
+        user: {
+            // object representing the user who posted
+        }
+        wows: // int,
+        likes: // int,
         createdAt: // timestamp,
-        id: // the unique ID of the newly created reply tweet
+        id: // the unique ID for the tweet
+    },
+    // and also the join table entry
+    {
+        tweetId: // id of the original tweet,
+        replyTweetId: // id of the reply tweet,
+        id: // IMPORTANT! The id of the join
     }
 }
 ~~~~
@@ -202,7 +216,7 @@ With this in mind, we need:
 
 // Expects
 {
-   id: // the id of the deleted tweet
+   id: // the unique id of the deleted tweet
 }
 ~~~~
 
@@ -212,7 +226,7 @@ With this in mind, we need:
 
 // Request
 {
-    bookmark: // only show me results past this id (for pagination)
+    bookmark: // only show me results past this id (pagination, front-end extracts last id from the previous query by itself)
 }
 
 // Expects
