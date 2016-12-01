@@ -3,32 +3,6 @@ module Api::V1
   class ApiController < ApplicationController
     include ActionController::Cookies
     include DeviseTokenAuth::Concerns::SetUserByToken
-    before_filter :authenticate_current_user, :cors_preflight_check
-    after_filter :cors_set_access_control_headers
-  
-    # For all responses in this controller, return the CORS access control headers.
-    
-    def cors_set_access_control_headers
-      headers['Access-Control-Max-Age'] = "1728000"
-      headers['Access-Control-Allow-Origin'] = '*'
-      headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
-      headers['Access-Control-Request-Method'] = '*'
-      headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-    end
-    
-    # If this is a preflight OPTIONS request, then short-circuit the
-    # request, return only the necessary headers and return an empty
-    # text/plain.
-    
-    def cors_preflight_check
-      if request.method == :options
-        headers['Access-Control-Allow-Origin'] = '*'
-        headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
-        headers['Access-Control-Allow-Headers'] = '*'
-        headers['Access-Control-Max-Age'] = '1728000'
-        render :text => '', :content_type => 'text/plain'
-      end
-    end
 
     def authenticate_current_user
        head :unauthorized if get_current_user.nil?
