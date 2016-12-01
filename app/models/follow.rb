@@ -8,5 +8,8 @@ class Follow < ApplicationRecord
   def flush_cache
     puts "cache: deleting followers for user #{self.followed_id}"
     Rails.cache.delete("users/#{self.followed_id}/followers")
+    
+    puts "cache: deleting feed for user #{self.follower_id}"
+    Rails.cache.delete("users/#{self.follower_id}/feed")
   end
 end

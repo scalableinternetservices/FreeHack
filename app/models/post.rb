@@ -6,7 +6,7 @@ class Post < ApplicationRecord
   
   default_scope { order(created_at: :desc) }
   
-  validates :content, length: {maximum: 160}, presence: true, :format => { :with => @@emojiPattern,
+  validates :content, length: {maximum: 160}, presence: true, :format => { :with => self.emojiPattern,
     :message => "Only Emojis" }
   
   after_commit :flush_cache
