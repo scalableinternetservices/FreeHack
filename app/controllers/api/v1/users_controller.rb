@@ -20,7 +20,7 @@ module Api::V1
     def posts
       posts = Rails.cache.fetch("users/#{@user.id}/posts", expires_in: 10.minutes) do
         puts "cache: fetching post for user #{@user.id}"
-        Post.where(user_id: @user.id).all
+        Post.where(user_id: @user.id).includes(:user).all
       end
       render_as_user(posts)
     end
