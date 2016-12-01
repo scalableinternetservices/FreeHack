@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161118060724) do
+ActiveRecord::Schema.define(version: 20161201070222) do
 
   create_table "channels", force: :cascade do |t|
     t.integer  "post_id"
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name", "post_id"], name: "index_channels_on_name_and_post_id"
+    t.index ["name"], name: "index_channels_on_name"
     t.index ["post_id"], name: "index_channels_on_post_id"
   end
 
@@ -25,6 +27,9 @@ ActiveRecord::Schema.define(version: 20161118060724) do
     t.integer  "followed_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.index ["followed_id"], name: "index_follows_on_followed_id"
+    t.index ["follower_id", "followed_id", "created_at"], name: "index_follows_on_follower_id_and_followed_id_and_created_at"
+    t.index ["follower_id"], name: "index_follows_on_follower_id"
   end
 
   create_table "like_reactions", force: :cascade do |t|
@@ -32,6 +37,7 @@ ActiveRecord::Schema.define(version: 20161118060724) do
     t.integer  "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["post_id", "user_id"], name: "index_like_reactions_on_post_id_and_user_id"
     t.index ["post_id"], name: "index_like_reactions_on_post_id"
     t.index ["user_id"], name: "index_like_reactions_on_user_id"
   end
@@ -43,6 +49,7 @@ ActiveRecord::Schema.define(version: 20161118060724) do
     t.integer  "original_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.index ["user_id", "created_at"], name: "index_posts_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
@@ -72,6 +79,9 @@ ActiveRecord::Schema.define(version: 20161118060724) do
     t.text     "bio"
     t.text     "tagline"
     t.text     "profile_color"
+    t.index ["email"], name: "index_users_on_email"
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
   create_table "wow_reactions", force: :cascade do |t|
@@ -79,6 +89,7 @@ ActiveRecord::Schema.define(version: 20161118060724) do
     t.integer  "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["post_id", "user_id"], name: "index_wow_reactions_on_post_id_and_user_id"
     t.index ["post_id"], name: "index_wow_reactions_on_post_id"
     t.index ["user_id"], name: "index_wow_reactions_on_user_id"
   end
