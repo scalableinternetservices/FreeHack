@@ -6,6 +6,8 @@ class CreateLikeReactions < ActiveRecord::Migration[5.0]
 
       t.timestamps
     end
-    add_index :like_reactions, [:post_id, :user_id]
+    # add_index :like_reactions, [:post_id, :user_id]
+    # add_index :like_reactions, :user_id
+    # add_index :like_reactions, :post_id
   end
 end

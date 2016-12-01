@@ -6,6 +6,8 @@ class CreateWowReactions < ActiveRecord::Migration[5.0]
 
       t.timestamps
     end
-    add_index :wow_reactions, [:post_id, :user_id]
+    # add_index :wow_reactions, [:post_id, :user_id]
+    # add_index :wow_reactions, :user_id
+    # add_index :wow_reactions, :post_id
   end
 end

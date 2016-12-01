@@ -41,6 +41,16 @@ var Account = React.createClass({
       bio: text
     });
   },
+  updateTagline: function(text) {
+    Auth.updateAccount({
+      tagline: text
+    });
+  },
+  updateProfileColor: function(text) {
+    Auth.updateAccount({
+      profile_color: text
+    });
+  },
   render: function() {
     return (
       <div className="account" style={{textAlign: "left"}}>
@@ -53,6 +63,10 @@ var Account = React.createClass({
               buttonTitle="Submit" currentValue={this.state.user.nickname} onSubmit={this.updateNickname} />
             <InputEditableTextField title="Bio" placeholder="Enter bio"
               buttonTitle="Submit" currentValue={this.state.user.bio} onSubmit={this.updateBio} />
+            <InputEditableTextField title="Tagline" placeholder="Enter tagline"
+              buttonTitle="Submit" currentValue={this.state.user.tagline} onSubmit={this.updateTagline} />
+            <InputEditableTextField title="Profile Color" placeholder="Enter profile_color"
+              buttonTitle="Submit" currentValue={this.state.user.profile_color} onSubmit={this.updateProfileColor} />
           </Col>
         </Row>
       </div>

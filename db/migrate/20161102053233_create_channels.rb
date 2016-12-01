@@ -6,6 +6,8 @@ class CreateChannels < ActiveRecord::Migration[5.0]
 
       t.timestamps
     end
-    add_index :channels, [:name, :post_id]
+    # add_index :channels, [:name, :post_id]
+    # add_index :channels, :post_id
+    # add_index :channels, :name
   end
 end
