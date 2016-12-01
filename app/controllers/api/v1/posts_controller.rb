@@ -16,7 +16,7 @@ module Api::V1
   
     # POST /posts
     def create
-      @post = Post.new(user: @current_user, content: params[:content])
+      @post = Post.new(user_id: @current_user.id, content: params[:content])
   
       if @post.save
         render json: @post, status: :created
@@ -31,14 +31,14 @@ module Api::V1
       action = params[:desired]
       if action == "react"
         if type == "wow"
-          wow = WowReaction.new(post: @post, user: @current_user)
+          wow = WowReaction.new(post_id: @post.id, user_id: @current_user.id)
           if wow.save
             render_as_user(@post)
           else
             render json: wow.errors, status: :unprocessable_entity
           end
         elsif type == "like"
-          like = LikeReaction.new(post: @post, user: @current_user)
+          like = LikeReaction.new(post_id: @post.id, user_id: @current_user.id)
           if like.save
             render_as_user(@post)
           else
@@ -47,13 +47,13 @@ module Api::V1
         end
       else
         if type == "wow"
-          if WowReaction.destroy_all(post: @post, user: @current_user)
+          if WowReaction.destroy_all(post_id: @post.id, user_id: @current_user.id)
             render_as_user(@post)
           else
             render json: {type: "unreact", success: "false"}
           end
         elsif type == "like"
-          if LikeReaction.destroy_all(post: @post, user: @current_user)
+          if LikeReaction.destroy_all(post_id: @post.id, user_id: @current_user.id)
             render_as_user(@post)
           else
             render json: {type: "unreact", success: "false"}
@@ -64,7 +64,7 @@ module Api::V1
   
     # PATCH/PUT /posts/1
     def update
-      if @post.user == @current_user && @post.update(post_params)
+      if @post.user_id == @current_user.id && @post.update(post_params)
         render_as_user(@post)
       else
         render json: @post.errors, status: :unprocessable_entity
@@ -73,7 +73,7 @@ module Api::V1
   
     # DELETE /posts/1
     def destroy
-      if @post.user == @current_user
+      if @post.user_id == @current_user.id
         @post.destroy
       end
     end
@@ -81,7 +81,11 @@ module Api::V1
     private
       # Use callbacks to share common setup or constraints between actions.
       def set_post
-        @post = Post.find(params[:id])
+        postID = params[:id]
+        @post = Rails.cache.fetch("posts/#{postID}", expires_in: 24.hours) do
+          puts "cache: fetching post #{postID}"
+          Post.find(postID)
+        end
       end
   
       # Only allow a trusted parameter "white list" through.

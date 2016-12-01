@@ -24,7 +24,11 @@ module Api::V1
       auth_headers = JSON.parse cookies[:authHeaders]
 
       expiration_datetime = DateTime.strptime(auth_headers["expiry"], "%s")
-      current_user = User.find_by(uid: auth_headers["uid"])
+      current_user_uid = auth_headers["uid"]
+      current_user = Rails.cache.fetch("users/uid/#{current_user_uid}", expires_in: 24.hours) do
+        puts "cache: fetching current_user: #{current_user_uid}"
+        User.find_by(uid: current_user_uid)
+      end
 
       if current_user &&
        current_user.tokens.has_key?(auth_headers["client"]) &&
