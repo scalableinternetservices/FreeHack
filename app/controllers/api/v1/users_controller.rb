@@ -18,21 +18,31 @@ module Api::V1
     
     # GET /api/v1/users/1/posts
     def posts
-      render_as_user(@user.posts())
+      posts = Rails.cache.fetch("users/#{@user.id}/posts", expires_in: 10.minutes) do
+        puts "cache: fetching post for user #{@user.id}"
+        Post.where(user_id: @user.id).all
+      end
+      render_as_user(posts)
     end
     
     # GET /api/v1/feed
     def feed
-      postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
-      feedPosts = Post.where("id IN (?)", postIds).limit(POSTS_PER_PAGE)
-      render_as_user(feedPosts)
+      posts = Rails.cache.fetch("users/#{@current_user.id}/feed", expires_in: 10.minutes) do
+        postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
+        Post.where("id IN (?)", postIds).limit(POSTS_PER_PAGE).all
+      end
+      render_as_user(posts)
     end
     
     # GET /api/v1/feed/after/:last_post_id
     def feedAfter
-      last_created_at = Post.find(params[:last_post_id]).created_at
-      postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
-      feedPosts = Post.where("id IN (?) AND created_at < ?", postIds, last_created_at).limit(POSTS_PER_PAGE)
+      lastPostID = params[:last_post_id]
+      feedPosts = Rails.cache.fetch("users/#{@current_user.id}/feed/after/#{lastPostID}", expires_in: 1.hour) do
+        puts "cache: fetching feed after #{lastPostID} for user #{@current_user.id}"
+        last_created_at = Post.find(lastPostID).created_at
+        postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
+        Post.where("id IN (?) AND created_at < ?", postIds, last_created_at).limit(POSTS_PER_PAGE).all
+      end
       render_as_user(feedPosts)
     end
     
@@ -43,14 +53,14 @@ module Api::V1
       user_id = params[:user_id]
       
       if type == "follow"
-        follow = Follow.new(followed_id: user_id, follower: @current_user)
+        follow = Follow.new(followed_id: user_id, follower_id: @current_user.id)
         if follow.save
           render_as_user(User.find(user_id))
         else 
           render json: follow.errors, status: :unprocessable_entity
         end
       else
-        if Follow.destroy_all(followed_id: user_id, follower: @current_user)
+        if Follow.destroy_all(followed_id: user_id, follower_id: @current_user.id)
           render_as_user(User.find(user_id))
         else
           render json: {type: "unfollow", success: "false"}

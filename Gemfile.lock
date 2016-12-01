@@ -48,6 +48,8 @@ GEM
     builder (3.2.2)
     byebug (9.0.6)
     concurrent-ruby (1.0.2)
+    connection_pool (2.2.1)
+    dalli (2.7.6)
     devise (4.2.0)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -172,6 +174,8 @@ DEPENDENCIES
   active_model_serializers (~> 0.10.0)
   activerecord-jdbcsqlite3-adapter
   byebug
+  connection_pool
+  dalli
   devise_token_auth
   factory_girl_rails
   jdbc-sqlite3
