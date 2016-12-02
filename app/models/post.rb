@@ -17,5 +17,8 @@ class Post < ApplicationRecord
     
     puts "cache: deleting posts for user #{self.user_id}"
     Rails.cache.delete("users/#{self.user_id}/posts")
+    
+    puts "cache: deleting global recent posts"
+    Rails.cache.delete("global/posts")
   end
 end
