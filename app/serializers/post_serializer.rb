@@ -8,14 +8,14 @@ class PostSerializer < ActiveModel::Serializer
   def wow_count
     return Rails.cache.fetch("posts/#{object.id}/wow_count") do
       puts "cache: fetching wow count for post: #{object.id}"
-      WowReaction.where(post_id: object.id).count
+      WowReaction.where(post_id: object.id).size
     end
   end
   
   def like_count
     return Rails.cache.fetch("posts/#{object.id}/like_count") do
       puts "cache: fetching like count for post: #{object.id}"
-      LikeReaction.where(post_id: object.id).count
+      LikeReaction.where(post_id: object.id).size
     end
   end
   

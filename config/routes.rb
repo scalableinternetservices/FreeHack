@@ -18,7 +18,9 @@ Rails.application.routes.draw do
         post 'react', on: :member
       end
       get '/feed', to: 'users#feed'
-      get '/feed/after/:last_post_id', to: 'users#feedAfter'
+      get '/recent', to: 'users#recent'
+      get '/search', to: 'posts#search'
+      get '/connections', to: 'users#connections'
     end
   end
   

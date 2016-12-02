@@ -2,7 +2,9 @@
 module Api::V1
   class PostsController < ApiController
     before_action :set_post, only: [:show, :update, :destroy, :react]
-    before_action :authenticate_current_user, only: [:create, :update, :destroy, :react, :show, :index]
+    before_action :authenticate_current_user, only: [:create, :update, :destroy, :react, :show, :index, :search]
+    
+    POSTS_PER_PAGE = 10
   
     # GET /posts
     def index
@@ -25,6 +27,20 @@ module Api::V1
       end
     end
     
+    def search
+      posts = []
+      terms = ActiveSupport::JSON.decode(params[:terms])
+      terms.each do |term|
+        text = term["term"]
+        posts += User.where('name LIKE ?', '%' + text + '%').joins(:posts).limit(POSTS_PER_PAGE).select('posts.*').map(&:id)
+        posts += Post.where('content LIKE ?', '%' + text + '%').includes(:user).limit(POSTS_PER_PAGE)
+      end
+      if posts.count >= POSTS_PER_PAGE
+        posts = posts.slice(0, POSTS_PER_PAGE)
+      end
+      render_as_user(posts)
+    end
+    
     # POST /posts/1/react
     def react
       type = params[:reaction]
@@ -35,14 +51,14 @@ module Api::V1
           if wow.save
             render_as_user(@post)
           else
-            render json: wow.errors, status: :unprocessable_entity
+            render json: {type: "error", msg: wow.errors}, status: :unprocessable_entity
           end
         elsif type == "like"
           like = LikeReaction.new(post_id: @post.id, user_id: @current_user.id)
           if like.save
             render_as_user(@post)
           else
-            render json: like.errors, status: :unprocessable_entity
+            render json: {type: "error", msg: like.errors}, status: :unprocessable_entity
           end
         end
       else
@@ -50,13 +66,13 @@ module Api::V1
           if WowReaction.destroy_all(post_id: @post.id, user_id: @current_user.id)
             render_as_user(@post)
           else
-            render json: {type: "unreact", success: "false"}
+            render json: {type: "error", msg: "failed to react to post"}
           end
         elsif type == "like"
           if LikeReaction.destroy_all(post_id: @post.id, user_id: @current_user.id)
             render_as_user(@post)
           else
-            render json: {type: "unreact", success: "false"}
+            render json: {type: "error", msg: "failed to react to post"}
           end
         end
       end
@@ -67,7 +83,7 @@ module Api::V1
       if @post.user_id == @current_user.id && @post.update(post_params)
         render_as_user(@post)
       else
-        render json: @post.errors, status: :unprocessable_entity
+        render json: {type: "error", msg: @post.errors}, status: :unprocessable_entity
       end
     end
   
