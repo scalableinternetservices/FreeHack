@@ -1,42 +1,32 @@
-# README
+# Tweetmoji
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Tweetmoji is a post-textual news and communication platform for everyone. Use it to share wisdom in the universal language of emoji.
 
-Things you may want to cover:
+Runs on `rails 5.0.0`
 
-* Ruby version
+Optimized branches:
 
-* System dependencies
+* `top` - the best we've got: all optimizations merged, inherits from `database-opt` and `caching`
 
-* Configuration
+* `database-opt` - indexes tables and fetches related recodes early
 
-* Database creation
+* `multithreading` - uses Puma in clustered mode to make full use of CPUs
 
-* Database initialization
+* `caching` - implements low-level caching, Memcached, serializer caching (inherits from `multithreading`)
 
-* How to run the test suite
+Notes:
 
-* Services (job queues, cache servers, search engines, etc.)
+* Our application is implemented with an API and a React.js front-end web app, exchanging json
 
-* Deployment instructions
+* Launching an instance will cause 1000 initial users and their posts to be seeded. 
 
-* ...
 
 ## Contributors
-Anirudh Narayan
-github: [@anirudhNarayan](http://github.com/anirudhNarayan)
 
-![ChrisLaganiere](https://avatars0.githubusercontent.com/u/2042745?v=3&s=100)
+Anirudh Narayan ([@anirudhNarayan](http://github.com/anirudhNarayan))
 
-Chris Laganiere
+Chris Laganiere ([@chrislaganiere](http://github.com/chrislaganiere))
 
-github: [@chrislaganiere](http://github.com/chrislaganiere)
+Parth Radia ([@pradia](http://github.com/pradia))
 
-Parth Radia
-
-github: [@pradia](http://github.com/pradia)
-
-Yunwen Zhu
-
-github: [@mysteryjoe](http://github.com/mysteryjoe)
+Yunwen Zhu ([@mysteryjoe](http://github.com/mysteryjoe))
