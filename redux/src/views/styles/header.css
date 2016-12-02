@@ -1,0 +1,36 @@
+.header {
+  width: 100%;
+  position: fixed;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.15);
+  border-bottom: 1px solid transparent;
+  transition: border .5s cubic-bezier(0.455, 0.03, 0.515, 0.955), background .5s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+.header ul {
+    list-style-type: none;
+    margin: 0 15px 0 0;
+    padding: 0;
+    overflow: hidden;
+    background: transparent;
+}
+
+.header li {
+    float: right;
+}
+
+.header li .logo {
+  margin: 10px auto;
+}
+
+.header li a {
+    display: block;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.header .home-link {
+  display:inline;
+
+}

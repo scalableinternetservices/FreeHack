@@ -1,0 +1,16 @@
+.profile-box .profile-emoji img {
+  margin: 10px auto;
+  display: block;
+}
+
+.profile-box .profile-info {
+  text-align: center;
+  padding: 10px 16px;
+}
+
+.profile-box .profile-info img {
+  height: 1em;
+  width: 1em;
+  margin: 0 .05em 0 .1em;
+  vertical-align: -0.1em;
+}

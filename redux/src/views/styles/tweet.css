@@ -1,0 +1,56 @@
+.tweet .originator-emoji img {
+  margin: 10px auto;
+  display: block;
+}
+
+.tweet .originator-info {
+  text-align: center;
+  padding: 10px 16px;
+}
+
+.tweet .emoji {
+   height: 1em;
+   width: 1em;
+   margin: 0 .05em 0 .1em;
+   vertical-align: -0.1em;
+}
+
+.tweet {
+  margin: 10px auto;
+}
+
+.tweet .counts {
+  text-align: center;
+}
+
+.tweet .counts .likes {
+  margin: 0 5px;
+}
+
+.tweet .counts .wows {
+  margin: 0 5px;
+}
+
+.tweet .counts .replies {
+  margin: 0 5px;
+}
+
+.tweet {
+  margin: 10px auto;
+}
+
+.tweet .actions {
+  text-align: center;
+}
+
+.tweet .actions .like {
+  margin: 0 5px;
+}
+
+.tweet .actions .wow {
+  margin: 0 5px;
+}
+
+.tweet .actions .reply {
+  margin: 0 5px;
+}

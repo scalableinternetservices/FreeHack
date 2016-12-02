@@ -1,0 +1,7 @@
+.active-tweet {
+  text-align: center;
+}
+
+.active-tweet .picker {
+  margin: 20px auto;
+}
