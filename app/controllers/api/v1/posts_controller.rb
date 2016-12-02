@@ -2,7 +2,7 @@
 module Api::V1
   class PostsController < ApiController
     before_action :set_post, only: [:show, :update, :destroy, :react]
-    before_action :authenticate_current_user, only: [:create, :update, :destroy, :react, :show, :index, :search]
+    before_action :authenticate_user!, only: [:create, :update, :destroy, :react, :show, :index, :search]
     
     POSTS_PER_PAGE = 10
   

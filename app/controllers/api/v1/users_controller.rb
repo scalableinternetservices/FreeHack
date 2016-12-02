@@ -2,8 +2,8 @@
 module Api::V1
   class UsersController < ApiController
     before_action :set_user, only: [:show, :update, :destroy, :posts]
-    before_action :authenticate_current_user, only: [:feed, :recent, :follow, :connections, :show, :posts, :update, :destroy]
-    
+    before_action :authenticate_user!, only: [:feed, :recent, :follow, :connections, :show, :posts, :update, :destroy]
+
     POSTS_PER_PAGE = 10
 
     # GET /api/v1/users
