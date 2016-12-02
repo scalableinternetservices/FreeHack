@@ -16,9 +16,10 @@ Optimized branches:
 
 Notes:
 
-* Our application is implemented with an API and a React.js front-end web app, exchanging json
+* Our application is implemented with an API and a React/Redux front-end web app, exchanging json. You can check out the extensive source in the top-level redux folder. A Dockerfile is included, but if you have a linux-based OS, it's
+best to just run `npm install && API_URL='http...' npm start'`.
 
-* Launching an instance will cause 1000 initial users and their posts to be seeded. 
+* Launching an instance will cause 1000 initial users and their posts to be seeded.
 
 
 ## Contributors
