@@ -24,7 +24,7 @@ module Api::V1
     # GET /api/v1/feed
     def feed
       postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
-      feedPosts = Post.where("id IN (?)", postIds).limit(POSTS_PER_PAGE)
+      feedPosts = Post.where("id IN (?)", postIds).includes(:user).limit(POSTS_PER_PAGE)
       render_as_user(feedPosts)
     end
     
@@ -32,7 +32,7 @@ module Api::V1
     def feedAfter
       last_created_at = Post.find(params[:last_post_id]).created_at
       postIds = Follow.where(follower_id: @current_user.id).joins(followed: :posts).select('posts.id').map(&:id)
-      feedPosts = Post.where("id IN (?) AND created_at < ?", postIds, last_created_at).limit(POSTS_PER_PAGE)
+      feedPosts = Post.where("id IN (?) AND created_at < ?", postIds, last_created_at).includes(:user).limit(POSTS_PER_PAGE)
       render_as_user(feedPosts)
     end
     
